@@ -1,0 +1,151 @@
+// CSS Module en SASS: estas clases solo aplican a TaskItem (styles.item, styles.check, …).
+@use "../styles/abstracts" as *;
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: rem(14px);
+  padding: rem(16px) rem(18px);
+
+  & + & {
+    border-top: 1px solid $line;
+  }
+
+  &[aria-busy="true"] {
+    opacity: 0.6;
+  }
+}
+
+// Casilla para marcar la tarea como hecha.
+.check {
+  @include flex-center;
+  flex-shrink: 0;
+  width: rem($check-size);
+  height: rem($check-size);
+  margin-top: rem(1px);
+  padding: 0;
+  border: 2px solid #b9c0cf;
+  border-radius: rem(8px);
+  background: $surface;
+  color: $surface;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
+
+  &:hover {
+    border-color: $ultramarine;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.checkIcon {
+  width: 72%;
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  transition: stroke-dashoffset 220ms ease 60ms;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  margin: 0 0 rem(4px);
+  font-size: rem(17px);
+  font-weight: 600;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+// La raya que tacha el título: crece de izquierda a derecha al marcarla como hecha.
+.titleText {
+  background-image: linear-gradient($ultramarine, $ultramarine);
+  background-repeat: no-repeat;
+  background-position: 0 58%;
+  background-size: 0% 2px;
+  transition:
+    background-size 320ms ease,
+    color 320ms ease;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: rem(4px) rem(12px);
+  margin: 0;
+}
+
+.notes {
+  color: $muted;
+  font-size: rem(14px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.actions {
+  display: flex;
+  gap: rem(2px);
+  margin-left: auto;
+}
+
+.action {
+  @include flex-center;
+  width: rem(36px);
+  height: rem(36px);
+  padding: 0;
+  border: none;
+  border-radius: rem(8px);
+  background: transparent;
+  color: $muted;
+
+  svg {
+    width: rem(19px);
+  }
+
+  &:hover {
+    background: $paper;
+    color: $ink;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.danger:hover {
+  color: priority-color(alta);
+  background: soft(priority-color(alta), 90%);
+}
+
+// Tarea hecha: casilla llena, palomita dibujada y título tachado.
+.done {
+  .check {
+    background: $ultramarine;
+    border-color: $ultramarine;
+  }
+
+  .checkIcon {
+    stroke-dashoffset: 0;
+  }
+
+  .titleText {
+    background-size: 100% 2px;
+    color: $muted;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .check,
+  .checkIcon,
+  .titleText {
+    transition: none;
+  }
+}

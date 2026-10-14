@@ -1,0 +1,27 @@
+// ── Variables (colores, tipografía, medidas) ──
+
+$ink: #1d2236;
+$paper: #eef0f4;
+$surface: #ffffff;
+$ultramarine: #3a4cf2;
+$line: #dde1ea;
+$muted: #5f6880;
+
+// Colores por prioridad: se recorren con @each para generar las clases.
+$priorities: (
+  alta: #d83a40,
+  media: #c97d06,
+  baja: #23905e,
+);
+
+$font-family: "Figtree Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+$breakpoints: (
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+);
+
+$radius: 14px;
+$gap: 16px;
+$check-size: 26px;

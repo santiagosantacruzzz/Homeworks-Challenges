@@ -1,0 +1,10 @@
+// ── Hoja principal ──
+// 1. Nuestras variables para Bootstrap  2. Bootstrap  3. Estilos propios.
+// (Bootstrap 5 todavía se carga con @import; nuestros parciales usan @use.)
+@import "bootstrap-theme";
+@import "bootstrap/scss/bootstrap";
+
+@import "base";
+@import "nav";
+@import "auth";
+@import "tasks";

@@ -1,0 +1,75 @@
+@use "abstracts" as *;
+
+body {
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+// Operaciones: el ancho del contenido sale de 720px + dos márgenes.
+.app-container {
+  width: 100%;
+  max-width: rem(720px) + rem($gap * 2);
+  margin-inline: auto;
+  padding-inline: rem($gap);
+}
+
+.page {
+  padding-block: rem(40px) rem(72px);
+
+  &--narrow {
+    max-width: rem(600px) + rem($gap * 2);
+  }
+}
+
+.page-head {
+  margin-bottom: rem(24px);
+
+  &__hello {
+    margin: 0 0 rem(2px);
+    color: $muted;
+    font-weight: 600;
+  }
+
+  &__title {
+    margin: 0 0 rem(8px);
+    font-size: clamp(2.2rem, 6vw, 3.25rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+
+  &__meta {
+    color: $muted;
+    margin-bottom: rem(20px);
+  }
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: rem(12px);
+  font-weight: 600;
+}
+
+.sheet {
+  @include surface;
+  padding: rem(28px);
+
+  @media (max-width: 575.98px) {
+    padding: rem(20px);
+  }
+}
+
+.page-loader {
+  @include flex-center;
+  gap: rem(12px);
+  padding: rem(48px) 0;
+  color: $muted;
+  font-weight: 600;
+}
+
+code {
+  color: $ink;
+  background: rgba($ink, 0.06);
+  padding: 0.1em 0.4em;
+  border-radius: rem(5px);
+}

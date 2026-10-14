@@ -1,0 +1,20 @@
+// ── Funciones propias ──
+@use "sass:color";
+@use "sass:map";
+@use "sass:math";
+@use "variables" as *;
+
+// px → rem (16px = 1rem)
+@function rem($px) {
+  @return math.div($px, 16px) * 1rem;
+}
+
+// Color de una prioridad del mapa $priorities.
+@function priority-color($name) {
+  @return map.get($priorities, $name);
+}
+
+// Versión muy suave de un color, para fondos.
+@function soft($color, $amount: 88%) {
+  @return color.mix(#ffffff, $color, $amount);
+}

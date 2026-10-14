@@ -1,0 +1,30 @@
+// ── Mixins: bloques de CSS reutilizables ──
+@use "sass:map";
+@use "variables" as *;
+@use "functions" as *;
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// Superficie blanca con borde suave (la "hoja" donde van las tareas y formularios).
+@mixin surface($radius: $radius) {
+  background: $surface;
+  border: 1px solid $line;
+  border-radius: $radius;
+  box-shadow: 0 1px 0 rgba($ink, 0.04), 0 12px 32px -24px rgba($ink, 0.35);
+}
+
+@mixin focus-ring($color: $ultramarine) {
+  outline: 3px solid rgba($color, 0.35);
+  outline-offset: 2px;
+}
+
+// Media query desde un tamaño de pantalla: @include from(md) { … }
+@mixin from($breakpoint) {
+  @media (min-width: map.get($breakpoints, $breakpoint)) {
+    @content;
+  }
+}

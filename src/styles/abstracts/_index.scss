@@ -1,0 +1,5 @@
+// Punto de entrada de variables, funciones y mixins:
+// en cualquier archivo basta con @use "…/abstracts" as *;
+@forward "variables";
+@forward "functions";
+@forward "mixins";

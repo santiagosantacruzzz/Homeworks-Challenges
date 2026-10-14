@@ -1,0 +1,39 @@
+// ── Tema de Bootstrap ──
+// Bootstrap está escrito en SASS: se le cambian sus variables antes de compilarlo.
+@use "abstracts" as *;
+
+$primary: $ultramarine;
+$danger: priority-color(alta);
+$success: priority-color(baja);
+$warning: priority-color(media);
+$dark: $ink;
+
+$body-bg: $paper;
+$body-color: $ink;
+$body-secondary-color: $muted;
+$font-family-sans-serif: $font-family;
+$headings-font-weight: 800;
+$link-color: $ultramarine;
+$link-decoration: none;
+$link-hover-decoration: underline;
+
+$border-radius: rem(9px);
+$border-radius-sm: rem(7px);
+$border-radius-lg: rem(12px);
+
+$input-bg: $surface;
+$input-border-color: #cfd4df;
+$input-focus-border-color: $ultramarine;
+$input-btn-focus-color: rgba($ultramarine, 0.25);
+$input-placeholder-color: #9aa1b2;
+$btn-font-weight: 600;
+
+$nav-pills-border-radius: 999px;
+$nav-pills-link-active-bg: $ink;
+
+$progress-height: rem(8px);
+$progress-bg: #dfe3ec;
+$progress-border-radius: 999px;
+
+$modal-content-border-radius: rem(16px);
+$toast-border-radius: rem(12px);

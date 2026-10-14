@@ -1,0 +1,75 @@
+@use "abstracts" as *;
+
+// Anidación: todo lo de la barra queda dentro de .app-nav.
+.app-nav {
+  background: $surface;
+  border-bottom: 1px solid $line;
+  padding-block: rem(10px);
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: rem(10px);
+    font-weight: 800;
+    font-size: rem(20px);
+    letter-spacing: -0.02em;
+  }
+
+  &__logo {
+    @include flex-center;
+    width: rem($check-size);
+    height: rem($check-size);
+    border-radius: rem(7px);
+    background: $ultramarine;
+    color: $surface;
+
+    svg {
+      width: 70%;
+    }
+  }
+
+  .nav-link {
+    font-weight: 600;
+    color: $muted;
+
+    &.active {
+      color: $ink;
+      text-decoration: underline;
+      text-decoration-color: $ultramarine;
+      text-decoration-thickness: 3px;
+      text-underline-offset: 8px;
+    }
+  }
+
+  &__session {
+    display: flex;
+    align-items: center;
+    gap: rem(10px);
+    padding-block: rem(8px);
+
+    @include from(sm) {
+      padding-block: 0;
+    }
+  }
+
+  &__avatar {
+    @include flex-center;
+    width: rem(34px);
+    height: rem(34px);
+    border-radius: 50%;
+    background: soft($ultramarine, 80%);
+    color: $ultramarine;
+    font-weight: 800;
+  }
+
+  &__user {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+    min-width: 0;
+
+    small {
+      color: $muted;
+    }
+  }
+}
