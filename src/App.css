@@ -1,0 +1,599 @@
+/*
+  Fila del cajero: el vestíbulo de un banco.
+  Piso de concreto, kiosco de acero con pantalla azul de cajero,
+  teclas verde/amarilla del teclado del cajero y la fila como un
+  rollo de papel térmico (lo único llamativo de la página).
+*/
+:root {
+  --concrete: #d9dde0;
+  --steel: #a9b3bb;
+  --steel-dark: #59646d;
+  --bezel: #2c343b;
+  --atm-blue: #1f4e9c;
+  --paper: #fcfcf9;
+  --ink: #1f2a33;
+  --thermal: #2d2c35;
+  --muted: #4c5862;
+  --key-green: #2e8a4f;
+  --key-green-dark: #236c3d;
+  --key-yellow: #f2c230;
+  --screen-warn: #ffd866;
+
+  --sans: "Archivo Variable", "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --receipt: "Courier Prime", "Courier New", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--concrete);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+code {
+  font-family: var(--receipt);
+  font-size: 0.95em;
+  font-weight: 700;
+}
+
+:focus-visible {
+  outline: 3px solid var(--key-yellow);
+  outline-offset: 2px;
+}
+
+/* ---------- Distribución ---------- */
+
+.content {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 56px 24px 72px;
+}
+
+.vestibule {
+  display: grid;
+  grid-template-columns: minmax(0, 380px) minmax(0, 460px);
+  justify-content: space-between;
+  gap: 48px;
+  align-items: start;
+}
+
+.vestibule__side {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* en escritorio el turnero se queda a la vista mientras se recorre el rollo */
+.kiosk {
+  position: sticky;
+  top: 24px;
+}
+
+/* ---------- Encabezado ---------- */
+
+.intro h1 {
+  margin: 0 0 16px;
+  font-size: 76px;
+  font-stretch: 62%;
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+}
+
+.intro p {
+  margin: 0;
+  max-width: 34em;
+}
+
+.intro__course {
+  margin-top: 12px !important;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ---------- Kiosco (turnero) ---------- */
+
+.kiosk {
+  background: var(--steel);
+  border-radius: 18px;
+  padding: 16px 16px 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.12);
+}
+
+.kiosk__screen {
+  background: var(--atm-blue);
+  border: 7px solid var(--bezel);
+  border-radius: 10px;
+  padding: 18px 18px 16px;
+  color: #ffffff;
+}
+
+.kiosk__title {
+  margin: 0 0 16px;
+  font-size: 26px;
+  font-stretch: 75%;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.field__label {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.field__input,
+.money-input {
+  height: 46px;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background: #ffffff;
+  color: var(--ink);
+}
+
+.field__input {
+  font-family: inherit;
+  font-size: 17px;
+  padding: 0 12px;
+}
+
+.field__input::placeholder,
+.money-input__field::placeholder {
+  color: #8b95a0;
+}
+
+.field__input:focus,
+.money-input:focus-within {
+  outline: none;
+  border-color: var(--key-yellow);
+}
+
+.field__input[aria-invalid="true"],
+.money-input:has([aria-invalid="true"]) {
+  border-color: var(--screen-warn);
+}
+
+.money-input {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.money-input__field {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+/* opciones de monto, como los botones laterales de la pantalla de un cajero */
+.amounts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.amount-option {
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 5px;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.amount-option:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.amount-option[aria-pressed="true"] {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: var(--atm-blue);
+}
+
+.field__hint {
+  font-size: 13px;
+  color: #c9d8f2;
+}
+
+.field__error {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--screen-warn);
+}
+
+.kiosk__note {
+  margin: 4px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  font-size: 14px;
+  color: #dbe6f7;
+}
+
+.kiosk__keys {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.kiosk .caption {
+  margin: 12px 2px 0;
+  color: #2c3740;
+}
+
+/* ---------- Teclas (del teclado del cajero) ---------- */
+
+.key {
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  font-stretch: 87%;
+  padding: 13px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow:
+    inset 0 -4px 0 rgba(0, 0, 0, 0.25),
+    0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.key:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.25);
+}
+
+.key:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.key--green {
+  background: var(--key-green);
+  color: #ffffff;
+}
+
+.key--green:hover:not(:disabled) {
+  background: var(--key-green-dark);
+}
+
+.key--yellow {
+  background: var(--key-yellow);
+  color: #2a2205;
+}
+
+.caption {
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+/* ---------- Tablero del cajero ---------- */
+
+.board {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 16px 16px 20px;
+  background: #eef1f3;
+  border-left: 6px solid var(--atm-blue);
+  border-radius: 4px 12px 12px 4px;
+}
+
+.board__info {
+  min-width: 0;
+}
+
+.board__info p {
+  margin: 0;
+}
+
+.board__label {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.board__name {
+  font-size: 30px;
+  font-stretch: 70%;
+  font-weight: 800;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.board__name--idle {
+  color: var(--muted);
+}
+
+.board__detail {
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+.board .key {
+  flex-shrink: 0;
+}
+
+.line__log {
+  min-height: 3em;
+  margin: 22px 0 6px;
+  font-size: 15px;
+}
+
+.line__count {
+  margin: 0 0 14px;
+  font-weight: 600;
+}
+
+.line__method {
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ---------- Rollo de papel térmico ---------- */
+
+.roll {
+  position: relative;
+}
+
+/* cuchilla dentada de la impresora de turnos */
+.roll__cutter {
+  position: relative;
+  z-index: 2;
+  height: 16px;
+  margin: 0 -10px;
+  background: var(--steel-dark);
+  border-radius: 6px 6px 0 0;
+}
+
+.roll__cutter::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 6px;
+  background:
+    linear-gradient(135deg, var(--steel-dark) 50%, transparent 50%) 0 0 / 10px 6px repeat-x,
+    linear-gradient(225deg, var(--steel-dark) 50%, transparent 50%) 0 0 / 10px 6px repeat-x;
+}
+
+.roll__paper {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0 0 6px;
+  background: var(--paper);
+  font-family: var(--receipt);
+  color: var(--thermal);
+  box-shadow: 0 24px 30px -22px rgba(31, 42, 51, 0.55);
+}
+
+/* borde rasgado al final del rollo */
+.roll__paper::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -10px;
+  height: 10px;
+  background:
+    linear-gradient(45deg, var(--paper) 50%, transparent 50%) 0 0 / 14px 10px repeat-x,
+    linear-gradient(-45deg, var(--paper) 50%, transparent 50%) 0 0 / 14px 10px repeat-x;
+}
+
+.roll__paper--empty {
+  padding: 40px 28px 46px;
+  text-align: center;
+}
+
+.roll__paper--empty p {
+  margin: 0;
+}
+
+.roll__paper--empty p:first-child {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.ticket {
+  position: relative;
+  padding: 16px 26px 18px;
+  background: var(--paper);
+}
+
+/* línea de corte entre tiquetes */
+.ticket + .ticket {
+  background-image: radial-gradient(circle, #a9adb3 1.4px, transparent 1.6px);
+  background-size: 9px 4px;
+  background-repeat: repeat-x;
+  background-position: 0 0;
+}
+
+.ticket p {
+  margin: 0;
+}
+
+.ticket__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 15px;
+}
+
+.ticket__code {
+  font-weight: 700;
+}
+
+.ticket__next {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 1px 8px;
+  background: var(--thermal);
+  color: var(--paper);
+  font-weight: 700;
+}
+
+.ticket__label {
+  margin-top: 10px !important;
+  font-size: 14px;
+}
+
+.ticket__time {
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.ticket__date {
+  font-size: 14px;
+}
+
+.ticket__name {
+  margin-top: 10px !important;
+  font-size: 18px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.ticket__line {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 16px;
+}
+
+.ticket__leader {
+  flex: 1;
+  min-width: 16px;
+  border-bottom: 2px dotted #8d9097;
+  transform: translateY(-4px);
+}
+
+.ticket__line span:last-child {
+  font-weight: 700;
+}
+
+/* el tiquete nuevo se "imprime" de arriba hacia abajo */
+.ticket--printed {
+  animation: ticket-print 900ms steps(14, end);
+}
+
+/* el tiquete atendido se arranca del rollo */
+.ticket--torn {
+  position: absolute;
+  z-index: 3;
+  top: 16px;
+  left: 0;
+  right: 0;
+  font-family: var(--receipt);
+  color: var(--thermal);
+  box-shadow: 0 10px 18px -8px rgba(31, 42, 51, 0.5);
+  animation: ticket-tear 650ms cubic-bezier(0.5, 0, 0.75, 0) forwards;
+}
+
+@keyframes ticket-print {
+  from {
+    clip-path: inset(0 0 100% 0);
+    background-color: #eef0ea;
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    background-color: var(--paper);
+  }
+}
+
+@keyframes ticket-tear {
+  0% {
+    transform: translate(0, 0) rotate(0);
+    opacity: 1;
+  }
+  25% {
+    transform: translate(2px, -6px) rotate(1.5deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(40px, -90px) rotate(9deg);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticket--printed {
+    animation: none;
+  }
+  .ticket--torn {
+    animation-duration: 1ms;
+  }
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 900px) {
+  .content {
+    padding: 36px 16px 56px;
+  }
+  .vestibule {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+  }
+  .intro h1 {
+    font-size: 60px;
+  }
+  .kiosk {
+    position: static;
+  }
+  .roll__cutter {
+    margin: 0 -6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .board {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .ticket {
+    padding: 18px 18px 20px;
+  }
+  .ticket__time {
+    font-size: 34px;
+  }
+}
