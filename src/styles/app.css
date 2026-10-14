@@ -1,0 +1,587 @@
+/*
+  Challenge 08 · Árbol binario como plano técnico.
+  Fondo azul de plano con cuadrícula, trazos blancos finos, rótulo en la esquina.
+  Un solo acento (ámbar) para lo que está pasando: el recorrido o la búsqueda.
+*/
+:root {
+  --plano: #143b6b;
+  --plano-hondo: #0f2f57;
+  --plano-panel: #11345f;
+  --trazo: rgba(232, 240, 255, 0.86);
+  --trazo-suave: rgba(232, 240, 255, 0.32);
+  --cuadricula: rgba(232, 240, 255, 0.07);
+  --cuadricula-fuerte: rgba(232, 240, 255, 0.13);
+  --tiza: #eaf1ff;
+  --tiza-suave: #a9bfdd;
+  --ambar: #ffb547;
+  --ambar-hondo: #2b1d05;
+  --aviso: #ffd28a;
+
+  --ui: "Chakra Petch", "Segoe UI", system-ui, sans-serif;
+  --mono: "Red Hat Mono", ui-monospace, Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--plano);
+  color: var(--tiza);
+  font-family: var(--ui);
+  -webkit-font-smoothing: antialiased;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 0.92em;
+  color: var(--tiza);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ambar);
+  outline-offset: 2px;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+/* ---------- Hoja (layout) ---------- */
+
+.sheet {
+  min-height: 100%;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  grid-template-rows: auto minmax(460px, 1fr) auto;
+  grid-template-areas:
+    "head head"
+    "controls canvas"
+    "console console";
+  /* margen de plano: doble línea alrededor de la hoja */
+  border: 1px solid var(--trazo-suave);
+  outline: 1px solid var(--trazo-suave);
+  outline-offset: -8px;
+  padding: 8px;
+}
+
+.sheet__head {
+  grid-area: head;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 20px 24px 18px;
+  border-bottom: 1px solid var(--trazo-suave);
+}
+
+.sheet__head h1 {
+  margin: 0 0 4px;
+  font-size: clamp(26px, 3.4vw, 40px);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+}
+
+.sheet__head p {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--tiza-suave);
+}
+
+.sheet__links {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ---------- Botones ---------- */
+
+button,
+.ghost {
+  cursor: pointer;
+  border-radius: 2px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.controls button[type="submit"] {
+  padding: 9px 14px;
+  border: 1px solid var(--tiza);
+  background: var(--tiza);
+  color: var(--plano);
+}
+
+.controls button[type="submit"]:hover {
+  background: #ffffff;
+}
+
+.ghost {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border: 1px solid var(--trazo-suave);
+  background: transparent;
+  color: var(--tiza);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.ghost:hover:not(:disabled) {
+  border-color: var(--tiza);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ---------- Controles ---------- */
+
+.controls {
+  grid-area: controls;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 22px 22px;
+  border-right: 1px solid var(--trazo-suave);
+  background: var(--plano-panel);
+}
+
+.control {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.control label {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.control__row {
+  display: flex;
+  gap: 8px;
+}
+
+.control input,
+.control textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 9px 11px;
+  border: 1px solid var(--trazo-suave);
+  border-radius: 2px;
+  background: var(--plano-hondo);
+  color: var(--tiza);
+  font-family: var(--mono);
+  font-size: 16px;
+  resize: vertical;
+}
+
+.control input::placeholder,
+.control textarea::placeholder {
+  color: rgba(169, 191, 221, 0.55);
+}
+
+.control input:focus,
+.control textarea:focus {
+  outline: none;
+  border-color: var(--tiza);
+}
+
+.control [aria-invalid="true"] {
+  border-color: var(--aviso);
+}
+
+.control textarea + button,
+.control .control__error + button {
+  align-self: flex-start;
+}
+
+.control__error {
+  font-size: 13px;
+  color: var(--aviso);
+}
+
+.control__link {
+  align-self: flex-start;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--tiza-suave);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.control__link:hover {
+  color: var(--tiza);
+}
+
+.status {
+  margin: 0;
+  padding: 10px 12px;
+  border-left: 2px solid var(--trazo-suave);
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--tiza-suave);
+}
+
+.status--ok {
+  border-left-color: var(--tiza);
+  color: var(--tiza);
+}
+
+.status--aviso {
+  border-left-color: var(--ambar);
+  color: var(--aviso);
+}
+
+.controls__footer {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ---------- Lienzo del árbol ---------- */
+
+.canvas {
+  grid-area: canvas;
+  position: relative;
+  min-height: 460px;
+  overflow: hidden;
+  background-color: var(--plano);
+  background-image:
+    linear-gradient(var(--cuadricula-fuerte) 1px, transparent 1px),
+    linear-gradient(90deg, var(--cuadricula-fuerte) 1px, transparent 1px),
+    linear-gradient(var(--cuadricula) 1px, transparent 1px),
+    linear-gradient(90deg, var(--cuadricula) 1px, transparent 1px);
+  background-size:
+    120px 120px,
+    120px 120px,
+    24px 24px,
+    24px 24px;
+  cursor: grab;
+}
+
+.canvas:active {
+  cursor: grabbing;
+}
+
+.canvas__stage {
+  position: absolute;
+  inset: 0;
+}
+
+.canvas__stage > div,
+.canvas svg.rd3t-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.canvas__empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--tiza-suave);
+}
+
+.canvas__empty p {
+  margin: 4px 0;
+}
+
+.canvas__empty p:first-child {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--tiza);
+}
+
+/* trazos (links) */
+.canvas .link {
+  stroke: var(--trazo);
+  stroke-width: 1.4;
+  fill: none;
+}
+
+.canvas .link--hueco {
+  stroke: none;
+}
+
+/* nodos */
+.node circle {
+  fill: var(--plano);
+  stroke: var(--trazo);
+  stroke-width: 1.6;
+  transition:
+    fill 220ms ease,
+    stroke 220ms ease;
+}
+
+.node__value {
+  fill: var(--tiza);
+  stroke: none;
+  font-family: var(--ui);
+  font-size: 15px;
+  font-weight: 600;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.node__order {
+  fill: var(--ambar);
+  stroke: none;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  text-anchor: start;
+}
+
+/* camino de la búsqueda / inserción: anillo ámbar */
+.node.is-path circle {
+  stroke: var(--ambar);
+  stroke-width: 2.4;
+}
+
+/* recorrido: nodo visitado relleno de ámbar */
+.node.is-visited circle {
+  fill: var(--ambar);
+  stroke: var(--ambar);
+}
+
+.node.is-visited .node__value {
+  fill: var(--ambar-hondo);
+}
+
+/* el nodo que se está visitando ahora */
+.node.is-current circle {
+  stroke: #ffffff;
+  stroke-width: 3;
+}
+
+/* búsqueda encontrada / nodo recién insertado: tinta invertida */
+.node.is-found circle,
+.node.is-new circle {
+  fill: var(--tiza);
+  stroke: var(--ambar);
+  stroke-width: 3;
+}
+
+.node.is-found .node__value,
+.node.is-new .node__value {
+  fill: var(--plano);
+}
+
+/* ---------- Rótulo (title block) ---------- */
+
+.title-block {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  width: 270px;
+  border: 1px solid var(--trazo);
+  background: rgba(15, 47, 87, 0.92);
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.title-block__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0;
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--trazo);
+  font-weight: 600;
+}
+
+.title-block__head span:last-child {
+  color: var(--tiza-suave);
+  font-weight: 500;
+}
+
+.title-block dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0;
+}
+
+.title-block dl > div {
+  padding: 6px 10px;
+  border-top: 1px solid var(--trazo-suave);
+  min-width: 0;
+}
+
+.title-block dl > div:nth-child(odd) {
+  border-right: 1px solid var(--trazo-suave);
+}
+
+.title-block dl > div:nth-child(-n + 2) {
+  border-top: none;
+}
+
+.title-block dt {
+  color: var(--tiza-suave);
+  font-size: 11px;
+}
+
+.title-block dd {
+  margin: 1px 0 0;
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Consola ---------- */
+
+.console {
+  grid-area: console;
+  padding: 14px 24px 18px;
+  border-top: 1px solid var(--trazo-suave);
+  background: var(--plano-hondo);
+  font-family: var(--mono);
+}
+
+.console__note {
+  margin: 0 0 10px;
+  font-family: var(--ui);
+  font-size: 13px;
+  color: var(--tiza-suave);
+}
+
+.console__line {
+  display: grid;
+  grid-template-columns: 34px 130px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+  border-top: 1px dashed var(--cuadricula-fuerte);
+}
+
+.console__play {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--trazo-suave);
+  background: transparent;
+  color: var(--tiza);
+  font-size: 12px;
+}
+
+.console__line.is-active .console__play,
+.console__play:hover:not(:disabled) {
+  border-color: var(--ambar);
+  color: var(--ambar);
+}
+
+.console__name {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.console__name small {
+  font-weight: 400;
+  color: var(--tiza-suave);
+}
+
+.console__values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  font-size: 16px;
+}
+
+.token {
+  color: var(--tiza-suave);
+  transition: color 160ms ease;
+}
+
+.console__line:not(.is-active) .token {
+  color: var(--tiza);
+}
+
+.token.is-on {
+  color: var(--ambar);
+}
+
+.token.is-current {
+  color: var(--ambar-hondo);
+  background: var(--ambar);
+  padding: 0 3px;
+  margin: 0 -3px;
+}
+
+.console__empty {
+  color: var(--tiza-suave);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 860px) {
+  .sheet {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto auto;
+    grid-template-areas:
+      "head"
+      "controls"
+      "canvas"
+      "console";
+  }
+  .sheet__head {
+    padding: 18px 16px 16px;
+  }
+  .controls {
+    border-right: none;
+    border-bottom: 1px solid var(--trazo-suave);
+    padding: 18px 16px;
+  }
+  .canvas {
+    min-height: 62vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .canvas__stage {
+    position: relative;
+    inset: auto;
+    flex: 1;
+    min-height: 0;
+  }
+  .title-block {
+    position: static;
+    width: auto;
+    margin: 0 8px 8px;
+  }
+  .console {
+    padding: 12px 16px 16px;
+  }
+  .console__line {
+    grid-template-columns: 34px minmax(0, 1fr);
+  }
+  .console__values {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .node circle,
+  .token {
+    transition: none;
+  }
+}
