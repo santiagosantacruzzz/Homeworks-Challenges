@@ -1,0 +1,775 @@
+/* Challenge 09 · Menú lateral impreso desde un árbol N-ario.
+   Idea visual: el menú ES el árbol. Cada ítem cuelga de su padre con líneas
+   tipo explorador de archivos y la rama que lleva a la página abierta se pinta en cobalto. */
+
+:root {
+  --bg: #f7f8fa;
+  --side: #edf0f5;
+  --surface: #ffffff;
+  --ink: #18202f;
+  --muted: #5b6577;
+  --line: #a5afc0;
+  --border: #dfe3ea;
+  --cobalt: #2b59ff;
+  --cobalt-ink: #1a3fd1;
+  --cobalt-soft: #e3e9ff;
+  --ok: #157a4a;
+  --warn: #a35a00;
+
+  --side-w: 300px;
+  --row: 38px;            /* alto de cada fila del menú */
+  --mid: 19px;            /* donde llega el codo de la línea (mitad de la fila) */
+  --stroke: 2px;
+
+  --font: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--cobalt-ink);
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--cobalt);
+  outline-offset: 2px;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 0.86em;
+}
+
+/* ---------- Estructura ---------- */
+
+.side {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: var(--side-w);
+  overflow-y: auto;
+  background: var(--side);
+  border-right: 1px solid var(--border);
+  padding: 28px 18px 40px 14px;
+  z-index: 20;
+}
+
+.side__head {
+  padding: 0 8px 22px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.side__title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.side__meta {
+  margin: 4px 0 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.main {
+  margin-left: var(--side-w);
+  min-height: 100vh;
+  padding: 56px clamp(24px, 6vw, 72px) 80px;
+}
+
+.menu-button,
+.scrim {
+  display: none;
+}
+
+/* ---------- El árbol del menú ---------- */
+
+.tree-nav {
+  font-size: 0.95rem;
+}
+
+.tree-nav__root {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--row);
+  padding: 0 10px 0 11px;
+  border-radius: 8px;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.tree-nav__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: var(--stroke) solid var(--cobalt);
+  background: var(--surface);
+  flex: none;
+}
+
+.tree-nav__root.active {
+  background: var(--cobalt-soft);
+  color: var(--cobalt-ink);
+}
+
+.tree-nav__root.active .tree-nav__dot {
+  background: var(--cobalt);
+}
+
+.tree-nav__root:hover {
+  background: rgb(255 255 255 / 0.7);
+}
+
+.branch {
+  list-style: none;
+  margin: 0 0 0 12px;
+  padding: 0;
+}
+
+/* Las líneas de la raíz salen justo debajo del punto */
+.branch--top {
+  margin-left: 16px;
+}
+
+.node {
+  position: relative;
+  padding-left: 18px;
+  /* Tramo de abajo de la línea vertical: sigue hacia los hermanos siguientes */
+  background: linear-gradient(var(--line), var(--line)) 0 var(--mid) / var(--stroke)
+    calc(100% - var(--mid)) no-repeat;
+}
+
+.node:last-child {
+  background: none;
+}
+
+/* Tramo de arriba de la línea vertical (desde el padre hasta esta fila) */
+.node::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--stroke);
+  height: calc(var(--mid) + var(--stroke) / 2);
+  background: var(--line);
+}
+
+/* Codo horizontal hacia el ítem */
+.node::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: calc(var(--mid) - var(--stroke) / 2);
+  width: 14px;
+  height: var(--stroke);
+  background: var(--line);
+  border-radius: 0 2px 2px 0;
+}
+
+/* La línea atraviesa a los hermanos de arriba para llegar al nodo del camino */
+.node--pass {
+  background-image: linear-gradient(var(--cobalt), var(--cobalt));
+}
+
+.node--pass::before,
+.node--path::before,
+.node--path::after {
+  background: var(--cobalt);
+}
+
+.node__row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-height: var(--row);
+}
+
+.node__link {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 10px;
+  border-radius: 8px;
+  color: var(--ink);
+  text-decoration: none;
+  line-height: 1.35;
+}
+
+.node__link:hover {
+  background: rgb(255 255 255 / 0.7);
+}
+
+.node--path > .node__row > .node__link {
+  font-weight: 700;
+}
+
+.node__link.active {
+  background: var(--cobalt-soft);
+  color: var(--cobalt-ink);
+  font-weight: 700;
+}
+
+.node__toggle {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.node__toggle:hover {
+  background: rgb(255 255 255 / 0.8);
+  color: var(--ink);
+}
+
+.chev {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.15s ease;
+}
+
+.chev--open {
+  transform: rotate(90deg);
+}
+
+/* ---------- Página ---------- */
+
+.page {
+  max-width: 760px;
+}
+
+.crumbs {
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.crumbs a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.crumbs a:hover {
+  color: var(--cobalt-ink);
+  text-decoration: underline;
+}
+
+.page h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+
+.page__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 36px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.page__meta > * {
+  padding: 3px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+.page__meta code {
+  color: var(--cobalt-ink);
+}
+
+.page h2 {
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+}
+
+.lead {
+  max-width: 60ch;
+  margin: 0 0 28px;
+  font-size: 1.1rem;
+  color: var(--muted);
+}
+
+.note {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* Tarjetas de los hijos (Inicio) */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--cobalt);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card span {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgb(24 32 47 / 0.08);
+}
+
+/* Índice de hijos (Configuración, Seguridad, Ayuda) */
+.index-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.index-list li + li {
+  border-top: 1px solid var(--border);
+}
+
+.index-list a {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 18px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.index-list a:hover {
+  background: var(--bg);
+}
+
+.index-list a > :last-child {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* Perfil */
+.profile {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.profile__avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: var(--cobalt);
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.facts {
+  flex: 1;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.facts > div {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 12px;
+  padding: 12px 18px;
+}
+
+.facts > div + div {
+  border-top: 1px solid var(--border);
+}
+
+.facts dt {
+  color: var(--muted);
+}
+
+.facts dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Filas (Mensajes, Sesiones, Estado) */
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.rows li {
+  display: grid;
+  grid-template-columns: minmax(110px, max-content) 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+}
+
+.rows li + li {
+  border-top: 1px solid var(--border);
+}
+
+.rows li > span {
+  color: var(--muted);
+}
+
+.rows time,
+.rows em {
+  font-size: 0.85rem;
+  font-style: normal;
+  color: var(--muted);
+}
+
+.rows .ok,
+.rows .warn {
+  justify-self: start;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.rows .ok {
+  background: #e3f4ea;
+  color: var(--ok);
+}
+
+.rows .warn {
+  background: #fdf0dc;
+  color: var(--warn);
+}
+
+/* Formularios */
+.form {
+  display: grid;
+  gap: 8px;
+  max-width: 440px;
+}
+
+.form label {
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.form label:not(:first-child):not(.switch) {
+  margin-top: 10px;
+}
+
+.form input:not([type="checkbox"]),
+.form select,
+.form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  font: inherit;
+}
+
+.form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.form button,
+.rows button {
+  justify-self: start;
+  padding: 9px 18px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--cobalt);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.form button {
+  margin-top: 14px;
+}
+
+.rows button {
+  padding: 6px 14px;
+  background: var(--surface);
+  color: var(--cobalt-ink);
+  border: 1px solid var(--border);
+}
+
+.form button:hover:not(:disabled) {
+  background: var(--cobalt-ink);
+}
+
+.rows button:hover {
+  border-color: var(--cobalt);
+}
+
+.form button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.note--ok {
+  color: var(--ok);
+  font-weight: 700;
+}
+
+.note--error {
+  color: #b42318;
+  font-weight: 700;
+}
+
+/* Interruptores */
+.switch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  font-weight: 400 !important;
+  cursor: pointer;
+}
+
+.switch + .switch {
+  border-top: 1px solid var(--border);
+}
+
+.switch input {
+  appearance: none;
+  position: relative;
+  flex: none;
+  width: 40px;
+  height: 22px;
+  margin: 0;
+  border-radius: 999px;
+  background: var(--line);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.switch input::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.15s ease;
+}
+
+.switch input:checked {
+  background: var(--cobalt);
+}
+
+.switch input:checked::after {
+  transform: translateX(18px);
+}
+
+/* Preguntas frecuentes */
+.faq {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.faq details + details {
+  border-top: 1px solid var(--border);
+}
+
+.faq summary {
+  padding: 14px 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.faq details p {
+  margin: 0;
+  padding: 0 18px 16px;
+  color: var(--muted);
+}
+
+/* Mapa del menú: DFS y BFS */
+.map {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.map section {
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.map ol {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: paso;
+}
+
+.map li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0 5px calc(var(--nivel, 0) * 16px);
+  counter-increment: paso;
+  font-size: 0.93rem;
+}
+
+.map li::before {
+  content: counter(paso);
+  min-width: 2ch;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-align: right;
+}
+
+.lvl {
+  padding: 1px 7px;
+  border-radius: 6px;
+  background: var(--cobalt-soft);
+  color: var(--cobalt-ink);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+/* ---------- Pantallas pequeñas: el menú pasa a ser un cajón ---------- */
+
+@media (max-width: 860px) {
+  .side {
+    width: min(86vw, var(--side-w));
+    padding-top: 76px;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    box-shadow: none;
+  }
+
+  .app--menu-open .side {
+    transform: none;
+    box-shadow: 0 0 40px rgb(24 32 47 / 0.18);
+  }
+
+  .menu-button {
+    display: block;
+    position: fixed;
+    top: 14px;
+    left: 16px;
+    z-index: 30;
+    padding: 9px 16px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    font-weight: 700;
+    box-shadow: 0 2px 10px rgb(24 32 47 / 0.08);
+    cursor: pointer;
+  }
+
+  .app--menu-open .menu-button {
+    left: auto;
+    right: 16px;
+  }
+
+  .scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    background: rgb(24 32 47 / 0.35);
+  }
+
+  .main {
+    margin-left: 0;
+    padding: 80px 16px 60px;
+  }
+
+  .profile {
+    flex-direction: column;
+  }
+
+  .facts > div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .rows li {
+    grid-template-columns: 1fr auto;
+    gap: 4px 12px;
+  }
+
+  .rows li > span {
+    grid-column: 1;
+  }
+
+  .rows li > :nth-child(3) {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
