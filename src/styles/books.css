@@ -1,0 +1,307 @@
+/* Estilos del Challenge 04 (pila de libros), limitados a .stack-app para que no choquen con los del Challenge 05. */
+.stack-app {
+  --teal: #66b8c4;
+  --teal-hover: #55a8b5;
+  --teal-title: #4aa3b3;
+  --teal-text: #2f8696;
+  --panel-left: #e3eff1;
+  --panel-right: #f2f8f8;
+  --form-card: #e7f1f3;
+  --card: #fdfdfd;
+  --card-border: #b9c5c9;
+  --input-border: #a7b6ba;
+  --text: #161616;
+  --text-muted: #5d6d71;
+  --error: #c0392b;
+  --radius: 6px;
+}
+
+.stack-app {
+  display: flex;
+  flex-direction: column;
+  background: var(--panel-right);
+  color: var(--text);
+  font-family: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.stack-app .workspace {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(340px, 42%) 1fr;
+}
+
+.stack-app .panel--form {
+  background: var(--panel-left);
+  padding: 36px 40px 48px;
+}
+
+.stack-app .panel--stack {
+  background: var(--panel-right);
+  padding: 36px 40px 56px;
+}
+
+.stack-app .section-title {
+  margin: 0 0 22px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--teal-title);
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
+/* ---------- Formulario ---------- */
+
+.stack-app .form-card {
+  position: sticky;
+  top: 28px;
+  max-width: 440px;
+  margin: 0 auto;
+  background: var(--form-card);
+  border: 1px solid #d3e1e4;
+  border-radius: 8px;
+  padding: 28px 24px 28px;
+  box-shadow:
+    0 8px 18px rgba(40, 70, 78, 0.2),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.stack-app .field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.stack-app .field__label {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.stack-app .field__input {
+  font-family: inherit;
+  font-size: 16px;
+  height: 46px;
+  padding: 0 14px;
+  border-radius: 5px;
+  border: 1px solid var(--input-border);
+  background: #ffffff;
+  color: var(--text);
+}
+
+.stack-app .field__input::placeholder {
+  color: #87959a;
+}
+
+.stack-app .field__input:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(102, 184, 196, 0.3);
+}
+
+.stack-app .field__input--error {
+  border-color: var(--error);
+}
+
+.stack-app .field__error {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--error);
+}
+
+/* ---------- Botones ---------- */
+
+.stack-app .btn {
+  font-family: inherit;
+  cursor: pointer;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+.stack-app .btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.stack-app .btn--primary {
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px 18px;
+  border: none;
+  background: var(--teal);
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 500;
+  box-shadow: 0 3px 7px rgba(30, 70, 80, 0.28);
+}
+
+.stack-app .btn--primary:hover {
+  background: var(--teal-hover);
+}
+
+.stack-app .btn--primary:active {
+  box-shadow: 0 1px 3px rgba(30, 70, 80, 0.3);
+}
+
+.stack-app .btn--outline {
+  padding: 8px 14px;
+  border: 1.5px solid var(--teal);
+  background: #ffffff;
+  color: var(--teal-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.stack-app .btn--outline:hover:not(:disabled) {
+  background: #e2f3f6;
+}
+
+/* ---------- Pila ---------- */
+
+.stack-app .stack-column {
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+.stack-app .stack-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: -8px;
+}
+
+.stack-app .stack-toolbar__count {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.stack-app .action-log {
+  min-height: 20px;
+  margin: 10px 0 14px;
+  font-size: 14px;
+  color: var(--teal-text);
+}
+
+.stack-app .stack-list {
+  list-style: none;
+  margin: 0;
+  padding: 20px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.stack-app .book-card {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 7px;
+  padding: 18px 20px 16px;
+  box-shadow: 0 2px 5px rgba(30, 60, 70, 0.14);
+  animation: card-drop 260ms ease-out backwards;
+}
+
+/* "hojas" de los libros de abajo que asoman detrás del tope */
+.stack-app .book-card--stacked::before,
+.stack-app .book-card--stacked::after {
+  content: "";
+  position: absolute;
+  border: 1px solid #b6c2c6;
+  border-bottom: none;
+  border-radius: 7px 7px 0 0;
+}
+
+.stack-app .book-card--stacked::before {
+  top: -17px;
+  left: 20px;
+  right: 20px;
+  height: 8px;
+  background: #d9e2e5;
+}
+
+.stack-app .book-card--stacked::after {
+  top: -10px;
+  left: 10px;
+  right: 10px;
+  height: 10px;
+  background: #e8eef0;
+}
+
+.stack-app .book-card__title {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #111111;
+}
+
+.stack-app .book-card__line {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.55;
+  color: #1d1d1d;
+  overflow-wrap: anywhere;
+}
+
+.stack-app .book-card__line strong {
+  font-weight: 700;
+}
+
+.stack-app .stack-empty {
+  margin-top: 16px;
+  border: 2px dashed #b9c9cd;
+  border-radius: 8px;
+  padding: 36px 20px;
+  text-align: center;
+  background: #f8fbfb;
+  color: var(--text-muted);
+}
+
+.stack-app .stack-empty p {
+  margin: 0 0 6px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.stack-app .stack-empty span {
+  font-size: 14px;
+}
+
+@keyframes card-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stack-app .book-card {
+    animation: none;
+  }
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 820px) {
+  .stack-app .workspace {
+    grid-template-columns: 1fr;
+  }
+  .stack-app .form-card {
+    position: static;
+  }
+  .stack-app .panel--form,
+.stack-app .panel--stack {
+    padding: 28px 16px 36px;
+  }
+  .stack-app .section-title {
+    font-size: 21px;
+  }
+}
+
