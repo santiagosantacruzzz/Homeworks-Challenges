@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import ArbolContext from "./ArbolContext";
 import useSesion from "../hooks/useSesion";
 import useColeccionFirestore from "../hooks/useColeccionFirestore";
@@ -26,6 +26,24 @@ export default function ArbolProvider({ children }) {
   // El árbol n-ario se reconstruye con cada cambio que llega de Firestore
   const arbol = useMemo(() => ArbolNario.desdeDocumentos(documentos), [documentos]);
   const seleccionado = arbol.buscar(idSeleccionado) ?? arbol.raiz;
+
+  // ── Recorridos (DFS / BFS) visibles en el diagrama ─────
+  const [modoRecorrido, setModoRecorrido] = useState("dfs");
+  const [verOrden, setVerOrden] = useState(false);
+  const [paso, setPaso] = useState(null); // índice del nodo que se está visitando
+
+  const ordenRecorrido = useMemo(
+    () => (modoRecorrido === "dfs" ? arbol.dfs() : arbol.bfs()),
+    [arbol, modoRecorrido]
+  );
+
+  // Avanza un nodo cada 0,7 s mientras se reproduce el recorrido
+  useEffect(() => {
+    if (paso === null) return undefined;
+    const fin = paso >= ordenRecorrido.length - 1;
+    const t = setTimeout(() => setPaso(fin ? null : paso + 1), fin ? 1200 : 700);
+    return () => clearTimeout(t);
+  }, [paso, ordenRecorrido.length]);
 
   const abrirCamino = useCallback(
     (id) =>
@@ -58,6 +76,17 @@ export default function ArbolProvider({ children }) {
       }),
     []
   );
+
+  const reproducirRecorrido = () => {
+    mostrarNodos(arbol.dfs()); // despliega todo para ver cada visita
+    setVerOrden(true);
+    setPaso(0);
+  };
+
+  const cambiarRecorrido = (modo) => {
+    setModoRecorrido(modo);
+    setPaso(null);
+  };
 
   const alternar = useCallback((id) => {
     setAbiertos((prev) => {
@@ -131,6 +160,14 @@ export default function ArbolProvider({ children }) {
         abiertos,
         alternar,
         mostrarNodos,
+        modoRecorrido,
+        cambiarRecorrido,
+        ordenRecorrido,
+        verOrden,
+        setVerOrden,
+        paso,
+        reproducirRecorrido,
+        detenerRecorrido: () => setPaso(null),
         cargando,
         error,
         esDelUsuario,

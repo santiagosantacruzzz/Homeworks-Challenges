@@ -367,6 +367,40 @@ $alto-barra: 60px;
     opacity: 0.28;
   }
 
+  // ── Recorrido reproducido sobre el diagrama ──
+  &__orden {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    z-index: 1;
+    min-width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    padding: 0 s(1);
+    border: 2px solid $fondo;
+    border-radius: 12px;
+    background: $tinta;
+    color: $superficie;
+    font-size: t("xs");
+    font-weight: 700;
+  }
+
+  &.es-pendiente {
+    opacity: 0.4;
+  }
+
+  &.es-visitando &__boton {
+    box-shadow:
+      0 0 0 3px $fondo,
+      0 0 0 6px #f2b705;
+  }
+
+  &.es-visitando &__orden {
+    background: #f2b705;
+    color: $tinta;
+  }
+
   &.es-activo &__boton {
     box-shadow:
       0 0 0 3px $fondo,
@@ -582,6 +616,61 @@ $alto-barra: 60px;
   }
 }
 
+.recorrido__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: s(3);
+  margin-top: s(3);
+}
+
+.interruptor {
+  display: inline-flex;
+  align-items: center;
+  gap: s(2);
+  font-size: t("sm");
+  cursor: pointer;
+
+  input {
+    width: 16px;
+    height: 16px;
+    accent-color: $carpeta;
+  }
+}
+
+.pista {
+  margin: s(3) 0 0;
+  padding: s(3);
+  border-left: 3px solid #f2b705;
+  border-radius: 6px;
+  background: rgba(#f2b705, 0.1);
+  font-size: t("sm");
+}
+
+.niveles {
+  margin-top: s(3);
+
+  &__fila {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: s(2);
+    align-items: start;
+    padding: s(2) 0;
+    border-bottom: 1px dashed $linea;
+
+    .recorrido {
+      margin: 0;
+    }
+  }
+
+  &__etiqueta {
+    padding-top: s(1);
+    font-size: t("xs");
+    font-weight: 700;
+    color: $tenue;
+  }
+}
+
 // Secuencia del recorrido: una fila que fluye
 .recorrido {
   display: flex;
@@ -621,5 +710,14 @@ $alto-barra: 60px;
   &.es-activo {
     border-color: $tinta;
     font-weight: 700;
+  }
+
+  &.es-visitando {
+    border-color: #f2b705;
+    background: rgba(#f2b705, 0.15);
+  }
+
+  &.es-pendiente {
+    opacity: 0.45;
   }
 }

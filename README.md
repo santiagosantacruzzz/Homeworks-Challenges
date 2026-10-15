@@ -15,6 +15,7 @@ en **Cloud Firestore**. El árbol se dibuja en pantalla como un diagrama de nodo
 | Consultar el árbol guardado | Buscador por nombre (`ArbolNario.buscarPorNombre`, recorrido DFS) y filtro por creador (`creadosPor`, `autores`): las coincidencias se resaltan en el diagrama y se puede ir a cada una |
 | Correo de quien creó como dato validador | Campo `autorEmail`; las reglas exigen que sea el correo de la sesión y solo ese correo puede renombrar o eliminar. En el diagrama, un punto marca lo que creó el usuario con sesión, y se puede filtrar por creador |
 | Un archivo no puede tener hijos, una carpeta sí | `NodoArbol.agregarHijo` lanza un error en archivos, la interfaz bloquea la creación y las reglas verifican que el padre sea una carpeta |
+| Recorridos DFS y BFS | Panel de recorridos con botón **Reproducir en el árbol**: el diagrama numera cada nodo en el orden de visita y lo resalta paso a paso. BFS se muestra agrupado por niveles. Si el árbol tiene una sola rama, la app avisa que ambos órdenes coinciden |
 | Presentación visual con SASS | `src/tree/disposicion.js` calcula la posición de cada nodo recorriendo el árbol; `src/styles/` usa variables, mapas, funciones, mixins, `@each` y nesting |
 
 ### Buenas prácticas
