@@ -15,8 +15,8 @@ function trazo({ desde, hasta }) {
   return `M${x1},${y1} C${medio},${y1} ${medio},${y2} ${x2},${y2}`;
 }
 
-export default function DiagramaArbol() {
-  const { arbol, abiertos, alternar, seleccionado, seleccionar } = useArbol();
+export default function DiagramaArbol({ resaltados = null }) {
+  const { arbol, abiertos, alternar, seleccionado, seleccionar, esDelUsuario } = useArbol();
   const lienzo = useRef(null);
 
   // Posiciones calculadas sobre el árbol n-ario (ver tree/disposicion.js)
@@ -61,11 +61,13 @@ export default function DiagramaArbol() {
           {posiciones.map(({ nodo, x, y }) => {
             const abierto = abiertos.has(nodo.id);
             const activo = nodo.id === seleccionado.id;
+            // Con una consulta activa, lo que no coincide se atenúa
+            const atenuado = resaltados && nodo.padre && !resaltados.has(nodo.id);
             return (
               <li
                 key={nodo.id}
                 data-id={nodo.id}
-                className={`nodo nodo--${nodo.tipo}${activo ? " es-activo" : ""}${nodo.padre ? "" : " nodo--raiz"}`}
+                className={`nodo nodo--${nodo.tipo}${activo ? " es-activo" : ""}${nodo.padre ? "" : " nodo--raiz"}${atenuado ? " es-atenuado" : ""}`}
                 style={{ transform: `translate(${x + MARGEN}px, ${y + MARGEN}px)` }}
               >
                 <button
@@ -77,6 +79,11 @@ export default function DiagramaArbol() {
                 >
                   <IconoNodo nodo={nodo} />
                   <span className="nodo__nombre">{nodo.nombre}</span>
+                  {nodo.padre && esDelUsuario(nodo) && (
+                    <span className="nodo__propio" title="Creado por ti">
+                      <span className="sr-only">(creado por ti)</span>
+                    </span>
+                  )}
                 </button>
 
                 {nodo.esCarpeta && nodo.hijos.length > 0 && (

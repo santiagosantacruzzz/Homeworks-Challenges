@@ -114,7 +114,7 @@ $alto-barra: 60px;
 
 .explorador__diagrama {
   position: relative;
-  height: min(62vh, 480px);
+  height: min(72vh, 600px);
   // Cuadrícula de puntos: el lienzo donde crece el árbol
   background-color: $fondo;
   background-image: radial-gradient(rgba($tinta, 0.12) 1px, transparent 1px);
@@ -122,6 +122,120 @@ $alto-barra: 60px;
 
   @include desde(900px) {
     height: auto;
+  }
+}
+
+.explorador__diagrama {
+  display: flex;
+  flex-direction: column;
+}
+
+.explorador__lienzo {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+// ── Consulta: buscar por nombre y filtrar por creador ───
+.consulta {
+  position: relative;
+  z-index: 3;
+  padding: s(4) s(5) 0;
+
+  &__campos {
+    display: grid;
+    gap: s(2);
+    max-width: 620px;
+
+    @include desde(700px) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .campo {
+      padding-block: s(2);
+    }
+  }
+
+  // Flota sobre el diagrama para no moverlo
+  &__resultados {
+    position: absolute;
+    top: calc(100% + #{s(2)});
+    left: s(5);
+    right: s(5);
+    max-width: 620px;
+    max-height: 340px;
+    overflow: auto;
+    padding: s(2);
+    background: $superficie;
+    border: 1px solid $linea;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba($tinta, 0.08);
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    li button {
+      width: 100%;
+      display: grid;
+      grid-template-columns: auto auto 1fr;
+      align-items: center;
+      gap: s(2);
+      padding: s(1.5) s(2);
+      border: 0;
+      border-radius: 6px;
+      background: none;
+      text-align: left;
+      font-size: t("sm");
+
+      &:hover {
+        background: $fondo;
+      }
+    }
+
+    @each $tipo, $color in $tipos {
+      .ico--#{$tipo} {
+        color: $color;
+      }
+    }
+  }
+
+  &__cabeza {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: s(1) s(2) s(2);
+    font-size: t("sm");
+    color: $tenue;
+
+    button {
+      border: 0;
+      background: none;
+      color: $carpeta;
+      font-weight: 700;
+      font-size: t("sm");
+    }
+  }
+
+  &__nombre {
+    font-weight: 700;
+  }
+
+  &__ruta {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: $tenue;
+    font-size: t("xs");
+    text-align: right;
+  }
+
+  &__mas {
+    margin: s(1) s(2) 0;
+    font-size: t("xs");
+    color: $tenue;
   }
 }
 
@@ -183,7 +297,9 @@ $alto-barra: 60px;
   left: 0;
   width: $ancho-nodo;
   height: $alto-nodo;
-  transition: transform 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    opacity 0.2s;
 
   @include sin-movimiento {
     transition: none;
@@ -230,6 +346,25 @@ $alto-barra: 60px;
 
   &--raiz &__boton {
     background: $tinta;
+  }
+
+  // Punto que marca lo que creó el usuario con sesión
+  &__propio {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    margin-left: auto;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.85;
+  }
+
+  &--archivo &__propio {
+    background: $archivo;
+  }
+
+  &.es-atenuado {
+    opacity: 0.28;
   }
 
   &.es-activo &__boton {

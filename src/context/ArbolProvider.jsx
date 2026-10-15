@@ -46,6 +46,19 @@ export default function ArbolProvider({ children }) {
     [arbol, abrirCamino]
   );
 
+  // Despliega las carpetas necesarias para que todos esos nodos se vean
+  const mostrarNodos = useCallback(
+    (nodos) =>
+      setAbiertos((prev) => {
+        const sig = new Set(prev);
+        nodos.forEach((n) => {
+          for (let p = n.padre; p; p = p.padre) sig.add(p.id);
+        });
+        return sig;
+      }),
+    []
+  );
+
   const alternar = useCallback((id) => {
     setAbiertos((prev) => {
       const sig = new Set(prev);
@@ -117,6 +130,7 @@ export default function ArbolProvider({ children }) {
         seleccionar,
         abiertos,
         alternar,
+        mostrarNodos,
         cargando,
         error,
         esDelUsuario,

@@ -100,6 +100,29 @@ export default class ArbolNario {
     return nodo ? this.dfs(nodo).filter((n) => n.autorEmail && n.autorEmail !== correo) : [];
   }
 
+  // ── Consultas ─────────────────────────────────────────
+
+  /** Busca por nombre recorriendo el árbol en profundidad (DFS). */
+  buscarPorNombre(texto) {
+    const clave = texto.trim().toLocaleLowerCase("es");
+    if (!clave) return [];
+    return this.dfs().filter(
+      (n) => n !== this.raiz && n.nombre.toLocaleLowerCase("es").includes(clave)
+    );
+  }
+
+  /** Todo lo que creó un correo (el dato validador guardado en cada nodo). */
+  creadosPor(correo) {
+    return this.dfs().filter((n) => n !== this.raiz && n.autorEmail === correo);
+  }
+
+  /** Correos distintos que han creado elementos en el árbol. */
+  autores() {
+    const correos = new Set();
+    this.dfs().forEach((n) => n.autorEmail && correos.add(n.autorEmail));
+    return [...correos].sort();
+  }
+
   /**
    * Reconstruye el árbol desde los documentos planos de Firestore.
    * Cada documento trae su id y el id de su padre.

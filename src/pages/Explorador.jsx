@@ -1,13 +1,20 @@
+import { useState } from "react";
 import useArbol from "../hooks/useArbol";
 import useSesion from "../hooks/useSesion";
 import DiagramaArbol from "../components/DiagramaArbol";
 import Inspector from "../components/Inspector";
 import Migas from "../components/Migas";
+import Consulta from "../components/Consulta";
+import { resolverConsulta } from "../utils/consulta";
 
 export default function Explorador() {
   const { usuario, salir } = useSesion();
   const { arbol, seleccionado, cargando, error } = useArbol();
   const { carpetas, archivos } = arbol.estadisticas();
+  const [consulta, setConsulta] = useState({ texto: "", autor: "" });
+
+  // Consulta sobre el árbol guardado: por nombre y/o por correo del creador
+  const resultados = resolverConsulta(arbol, consulta, usuario.email);
 
   return (
     <div className="explorador">
@@ -27,13 +34,18 @@ export default function Explorador() {
 
       <main className="explorador__cuerpo">
         <section className="explorador__diagrama" aria-busy={cargando}>
-          {error && <p className="aviso aviso--flotante">Firestore respondió: {error}</p>}
-          {!cargando && arbol.raiz.esHoja && (
-            <p className="vacio">
-              El árbol está vacío. Usa el panel de la derecha para crear tu primera carpeta.
-            </p>
+          {!arbol.raiz.esHoja && (
+            <Consulta consulta={consulta} onCambio={setConsulta} resultados={resultados} />
           )}
-          <DiagramaArbol />
+          <div className="explorador__lienzo">
+            {error && <p className="aviso aviso--flotante">Firestore respondió: {error}</p>}
+            {!cargando && arbol.raiz.esHoja && (
+              <p className="vacio">
+                El árbol está vacío. Usa el panel de la derecha para crear tu primera carpeta.
+              </p>
+            )}
+            <DiagramaArbol resaltados={resultados && new Set(resultados.map((n) => n.id))} />
+          </div>
         </section>
         <Inspector key={seleccionado.id} />
       </main>
