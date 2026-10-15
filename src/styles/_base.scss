@@ -1,0 +1,188 @@
+@use "tokens" as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  background: $fondo;
+  color: $tinta;
+  font-family: $texto;
+  font-size: t("md");
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3 {
+  font-family: $titular;
+  line-height: 1.15;
+  margin: 0;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  @include anillo-foco;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+a {
+  color: $carpeta;
+  font-weight: 700;
+  @include anillo-foco;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+// ── Iconos ──────────────────────────────────────────────
+.ico {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: currentColor;
+
+  &--archivo path:last-child {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.3;
+    opacity: 0.6;
+  }
+}
+
+// ── Formularios ─────────────────────────────────────────
+.etiqueta {
+  display: block;
+  margin: s(4) 0 s(1.5);
+  font-size: t("sm");
+  font-weight: 700;
+}
+
+.campo {
+  width: 100%;
+  padding: s(2.5) s(3);
+  background: $superficie;
+  border: 1.5px solid $linea;
+  border-radius: 8px;
+  outline: none;
+
+  &:focus {
+    border-color: $carpeta;
+    box-shadow: 0 0 0 3px rgba($carpeta, 0.18);
+  }
+}
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: s(2);
+  padding: s(2.5) s(4);
+  border: 1.5px solid $linea;
+  border-radius: 8px;
+  background: $superficie;
+  font-weight: 700;
+  font-size: t("sm");
+
+  &:hover:not(:disabled) {
+    border-color: $tinta;
+  }
+
+  &--principal {
+    background: $tinta;
+    border-color: $tinta;
+    color: $superficie;
+
+    &:hover:not(:disabled) {
+      background: $carpeta;
+      border-color: $carpeta;
+    }
+
+    &:disabled {
+      opacity: 0.45;
+    }
+  }
+
+  &--peligro {
+    background: $peligro;
+    border-color: $peligro;
+    color: $superficie;
+  }
+
+  &--texto-peligro {
+    color: $peligro;
+  }
+
+  &--chico {
+    padding: s(1.5) s(3);
+  }
+
+  &--ancho {
+    width: 100%;
+    margin-top: s(6);
+    padding-block: s(3);
+    font-size: t("md");
+  }
+}
+
+.aviso {
+  margin: s(3) 0 0;
+  padding: s(2.5) s(3);
+  border-radius: 8px;
+  background: rgba($peligro, 0.08);
+  color: $peligro;
+  font-size: t("sm");
+}
+
+.nota {
+  margin: s(2) 0 0;
+  font-size: t("sm");
+  color: $tenue;
+}
+
+.cargando {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: s(3);
+  color: $tenue;
+
+  &__punto {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: $carpeta;
+    animation: latido 1s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes latido {
+  to {
+    transform: scale(1.6);
+    opacity: 0.4;
+  }
+}

@@ -1,0 +1,46 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function conSesion() {
+      return request.auth != null && request.auth.token.email != null;
+    }
+
+    function esAutor(datos) {
+      return datos.autorEmail == request.auth.token.email;
+    }
+
+    // Un elemento solo puede colgar de la raíz o de una carpeta:
+    // los archivos son hojas y no pueden tener hijos.
+    function padrePermiteHijos(padre) {
+      return padre == 'raiz'
+        || get(/databases/$(database)/documents/elementos/$(padre)).data.tipo == 'carpeta';
+    }
+
+    function nombreOk(nombre) {
+      return nombre is string && nombre.size() >= 1 && nombre.size() <= 60;
+    }
+
+    // Cada documento es un nodo del árbol n-ario
+    match /elementos/{elementoId} {
+      allow read: if conSesion();
+
+      allow create: if conSesion()
+        && esAutor(request.resource.data)
+        && request.resource.data.tipo in ['carpeta', 'archivo']
+        && nombreOk(request.resource.data.nombre)
+        && padrePermiteHijos(request.resource.data.padre);
+
+      // Renombrar: solo el autor, sin cambiar tipo, padre ni autor
+      allow update: if conSesion()
+        && esAutor(resource.data)
+        && request.resource.data.autorEmail == resource.data.autorEmail
+        && request.resource.data.tipo == resource.data.tipo
+        && request.resource.data.padre == resource.data.padre
+        && nombreOk(request.resource.data.nombre);
+
+      allow delete: if conSesion() && esAutor(resource.data);
+    }
+  }
+}

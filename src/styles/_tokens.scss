@@ -1,0 +1,71 @@
+@use "sass:map";
+@use "sass:math";
+
+// ── Color ───────────────────────────────────────────────
+$fondo: #eef1f5;
+$superficie: #ffffff;
+$tinta: #17223b;
+$tenue: #5a6580;
+$linea: #d5dbe6;
+$rama: #b7c0d1;
+$carpeta: #2a5bd7;
+$archivo: #c8336b;
+$peligro: #b42318;
+
+// Color por tipo de nodo (se recorre con @each)
+$tipos: (
+  "carpeta": $carpeta,
+  "archivo": $archivo,
+);
+
+// ── Tipografía ──────────────────────────────────────────
+$titular: "Bricolage Grotesque", "Segoe UI", sans-serif;
+$texto: "Atkinson Hyperlegible", "Segoe UI", sans-serif;
+
+// Escala tipográfica 1.25
+$escala: (
+  "xs": 12px,
+  "sm": 14px,
+  "md": 16px,
+  "lg": 20px,
+  "xl": 25px,
+  "2xl": 31px,
+  "3xl": 39px,
+);
+
+// ── Espacio y medidas (deben coincidir con tree/disposicion.js) ──
+$u: 4px;
+$alto-nodo: 40px;
+$ancho-nodo: 168px;
+$inspector: 380px;
+
+@function rem($px) {
+  @return math.div($px, 16px) * 1rem;
+}
+
+@function t($paso) {
+  @return rem(map.get($escala, $paso));
+}
+
+@function s($n) {
+  @return $u * $n;
+}
+
+@mixin desde($ancho) {
+  @media (min-width: $ancho) {
+    @content;
+  }
+}
+
+@mixin anillo-foco($color: $tinta) {
+  &:focus-visible {
+    outline: 2px solid $color;
+    outline-offset: 3px;
+  }
+}
+
+@mixin sin-movimiento {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}

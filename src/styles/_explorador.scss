@@ -1,0 +1,490 @@
+@use "sass:math";
+@use "tokens" as *;
+
+$alto-barra: 60px;
+
+// ── Barra superior ──────────────────────────────────────
+.barra {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: s(5);
+  min-height: $alto-barra;
+  padding: s(2) s(5);
+  background: $superficie;
+  border-bottom: 1px solid $linea;
+
+  &__marca {
+    font-family: $titular;
+    font-weight: 800;
+    font-size: t("xl");
+    letter-spacing: -0.03em;
+  }
+
+  &__cifras {
+    display: none;
+    gap: s(4);
+    margin: 0 0 0 auto;
+    font-size: t("sm");
+    color: $tenue;
+
+    b {
+      color: $tinta;
+    }
+
+    @include desde(1100px) {
+      display: flex;
+    }
+  }
+
+  &__usuario {
+    display: flex;
+    align-items: center;
+    gap: s(3);
+    margin-left: auto;
+    font-size: t("sm");
+    color: $tenue;
+
+    span {
+      display: none;
+      max-width: 230px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      @include desde(700px) {
+        display: inline;
+      }
+    }
+
+    @include desde(1100px) {
+      margin-left: 0;
+    }
+  }
+}
+
+.migas {
+  min-width: 0;
+
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li + li::before {
+    content: "/";
+    margin: 0 s(1);
+    color: $rama;
+  }
+
+  button {
+    padding: s(1) s(1.5);
+    border: 0;
+    border-radius: 6px;
+    background: none;
+    color: $tenue;
+    font-size: t("sm");
+
+    &:hover {
+      color: $tinta;
+    }
+
+    &[aria-current] {
+      color: $tinta;
+      font-weight: 700;
+    }
+  }
+}
+
+// ── Cuerpo: diagrama + inspector ────────────────────────
+.explorador__cuerpo {
+  display: grid;
+
+  @include desde(900px) {
+    grid-template-columns: minmax(0, 1fr) $inspector;
+    height: calc(100vh - #{$alto-barra});
+  }
+}
+
+.explorador__diagrama {
+  position: relative;
+  height: min(62vh, 480px);
+  // Cuadrícula de puntos: el lienzo donde crece el árbol
+  background-color: $fondo;
+  background-image: radial-gradient(rgba($tinta, 0.12) 1px, transparent 1px);
+  background-size: 22px 22px;
+
+  @include desde(900px) {
+    height: auto;
+  }
+}
+
+.vacio {
+  position: absolute;
+  left: s(8);
+  bottom: s(8);
+  max-width: 32ch;
+  margin: 0;
+  color: $tenue;
+}
+
+.aviso--flotante {
+  position: absolute;
+  top: s(4);
+  left: s(4);
+  right: s(4);
+  z-index: 2;
+}
+
+// ── Diagrama ────────────────────────────────────────────
+.diagrama {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+
+  &__lienzo {
+    position: relative;
+    min-width: 100%;
+  }
+
+  &__ramas {
+    position: absolute;
+    inset: 0;
+  }
+
+  &__nodos {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+}
+
+.rama {
+  fill: none;
+  stroke: $rama;
+  stroke-width: 2;
+  transition: stroke 0.2s;
+
+  &--activa {
+    stroke: $carpeta;
+    stroke-width: 2.5;
+  }
+}
+
+.nodo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: $ancho-nodo;
+  height: $alto-nodo;
+  transition: transform 0.25s ease;
+
+  @include sin-movimiento {
+    transition: none;
+  }
+
+  &__boton {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: s(2);
+    padding: 0 s(4) 0 s(3);
+    border: 2px solid transparent;
+    font-size: t("sm");
+    font-weight: 700;
+    text-align: left;
+    transition: box-shadow 0.15s;
+  }
+
+  &__nombre {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // Carpeta: bloque sólido de esquinas suaves
+  &--carpeta &__boton {
+    background: $carpeta;
+    color: $superficie;
+    border-radius: 10px;
+  }
+
+  // Archivo: píldora blanca con borde (una hoja)
+  &--archivo &__boton {
+    background: $superficie;
+    border-color: $archivo;
+    border-radius: math.div($alto-nodo, 2);
+    color: $tinta;
+
+    .ico {
+      color: $archivo;
+    }
+  }
+
+  &--raiz &__boton {
+    background: $tinta;
+  }
+
+  &.es-activo &__boton {
+    box-shadow:
+      0 0 0 3px $fondo,
+      0 0 0 5px $tinta;
+  }
+
+  &__plegar {
+    position: absolute;
+    top: 50%;
+    right: -12px;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 s(1.5);
+    transform: translateY(-50%);
+    border: 2px solid $carpeta;
+    border-radius: 12px;
+    background: $superficie;
+    color: $carpeta;
+    font-size: t("xs");
+    font-weight: 700;
+    line-height: 1;
+
+    &:hover {
+      background: $carpeta;
+      color: $superficie;
+    }
+  }
+
+  &--raiz &__plegar {
+    border-color: $tinta;
+    color: $tinta;
+  }
+}
+
+// ── Inspector ───────────────────────────────────────────
+.inspector {
+  background: $superficie;
+  border-left: 1px solid $linea;
+  padding: s(6) s(6) s(10);
+  overflow: auto;
+
+  @media (max-width: 899px) {
+    border-left: 0;
+    border-top: 1px solid $linea;
+  }
+}
+
+.ficha {
+  display: flex;
+  align-items: flex-start;
+  gap: s(3);
+
+  .ico {
+    width: 36px;
+    height: 36px;
+  }
+
+  @each $tipo, $color in $tipos {
+    &--#{$tipo} .ico {
+      color: $color;
+    }
+  }
+
+  h2 {
+    font-size: t("2xl");
+    overflow-wrap: anywhere;
+  }
+
+  p {
+    margin: s(1) 0 0;
+    color: $tenue;
+  }
+}
+
+.datos {
+  margin: s(6) 0 0;
+
+  div {
+    display: grid;
+    grid-template-columns: 112px 1fr;
+    gap: s(3);
+    padding: s(2) 0;
+    border-bottom: 1px solid $fondo;
+  }
+
+  dt {
+    color: $tenue;
+    font-size: t("sm");
+  }
+
+  dd {
+    margin: 0;
+    font-size: t("sm");
+    overflow-wrap: anywhere;
+  }
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: s(2);
+  margin-top: s(4);
+
+  &__form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: s(2);
+    width: 100%;
+
+    .campo,
+    p {
+      flex: 1 1 100%;
+      margin: 0;
+    }
+
+    &--peligro {
+      padding: s(3);
+      border-radius: 8px;
+      background: rgba($peligro, 0.06);
+    }
+  }
+}
+
+.bloque {
+  margin-top: s(8);
+  padding-top: s(6);
+  border-top: 1px solid $linea;
+
+  h3 {
+    font-size: t("lg");
+    margin-bottom: s(3);
+    overflow-wrap: anywhere;
+  }
+
+  &--hoja p {
+    margin: 0;
+    padding: s(3);
+    border: 1.5px dashed rgba($archivo, 0.5);
+    border-radius: 8px;
+    color: $tenue;
+    font-size: t("sm");
+  }
+}
+
+.nuevo {
+  display: grid;
+  gap: s(3);
+
+  &__tipo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: s(2);
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: s(2);
+      padding: s(2.5);
+      border: 1.5px solid $linea;
+      border-radius: 8px;
+      font-size: t("sm");
+      font-weight: 700;
+      color: $tenue;
+      cursor: pointer;
+
+      &:focus-within {
+        outline: 2px solid $tinta;
+        outline-offset: 2px;
+      }
+    }
+
+    @each $tipo, $color in $tipos {
+      label:has(input[value="#{$tipo}"]).es-elegido {
+        border-color: $color;
+        background: rgba($color, 0.07);
+        color: $color;
+      }
+    }
+
+    input {
+      position: absolute;
+      opacity: 0;
+    }
+  }
+}
+
+.conmutador {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: s(1);
+  padding: s(1);
+  border-radius: 10px;
+  background: $fondo;
+
+  button {
+    padding: s(2);
+    border: 0;
+    border-radius: 7px;
+    background: none;
+    font-size: t("xs");
+    font-weight: 700;
+    color: $tenue;
+
+    &[aria-selected="true"] {
+      background: $superficie;
+      color: $tinta;
+      box-shadow: 0 1px 2px rgba($tinta, 0.12);
+    }
+  }
+}
+
+// Secuencia del recorrido: una fila que fluye
+.recorrido {
+  display: flex;
+  flex-wrap: wrap;
+  gap: s(1.5);
+  margin: s(3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.paso {
+  display: inline-flex;
+  align-items: center;
+  gap: s(1.5);
+  padding: s(1) s(2.5) s(1) s(1);
+  border: 1.5px solid $linea;
+  border-radius: 999px;
+  background: $superficie;
+  font-size: t("xs");
+
+  &__n {
+    min-width: 20px;
+    height: 20px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    font-weight: 700;
+    color: $superficie;
+  }
+
+  @each $tipo, $color in $tipos {
+    &--#{$tipo} &__n {
+      background: $color;
+    }
+  }
+
+  &.es-activo {
+    border-color: $tinta;
+    font-weight: 700;
+  }
+}
