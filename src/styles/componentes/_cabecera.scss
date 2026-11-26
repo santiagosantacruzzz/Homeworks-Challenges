@@ -1,0 +1,117 @@
+@use "../abstracts" as *;
+
+.cabecera {
+  text-align: center;
+
+  &__franja {
+    @include dato("2xs");
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: s(2);
+    padding: s(1.5) 0;
+    border-top: 1px solid $regla;
+    border-bottom: 1px solid $regla;
+    text-transform: uppercase;
+  }
+
+  &__fecha::first-letter {
+    text-transform: uppercase;
+  }
+
+  &__titulo {
+    @include titular("4xl");
+    margin-top: s(4);
+    letter-spacing: 0.08em;
+
+    @include desde("tableta") {
+      font-size: t("5xl");
+      letter-spacing: 0.14em;
+    }
+  }
+
+  &__lema {
+    max-width: 46ch;
+    margin: s(2) auto 0;
+    font-style: italic;
+    font-size: t("lg");
+    color: $tinta-suave;
+
+    em {
+      font-style: normal;
+      font-weight: 600;
+      color: $tinta;
+    }
+  }
+
+  &__cifras {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin-top: s(5);
+    border-top: 3px solid $regla;
+    border-bottom: 1px solid $regla;
+
+    @include desde("tableta") {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    div {
+      padding: s(2) s(3);
+
+      & + div {
+        border-left: 1px solid $regla-fina;
+      }
+    }
+
+    dt {
+      @include dato("2xs");
+      color: $tinta-tenue;
+      text-transform: uppercase;
+    }
+
+    dd {
+      @include titular("2xl");
+    }
+  }
+}
+
+.fuente {
+  &--supabase {
+    color: $verde;
+  }
+  &--ejemplo {
+    color: $rojo;
+  }
+}
+
+.teletipo {
+  display: flex;
+  align-items: center;
+  gap: s(3);
+  margin-top: s(3);
+  padding: s(2) 0;
+  border-bottom: 1px solid $regla;
+
+  &__rotulo {
+    @include titular("sm");
+    padding: s(1) s(2);
+    background: $rojo;
+    color: $papel-claro;
+    white-space: nowrap;
+  }
+
+  &__texto {
+    flex: 1;
+    min-width: 0;
+    font-style: italic;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    time {
+      @include dato("xs");
+      font-style: normal;
+      color: $rojo;
+    }
+  }
+}

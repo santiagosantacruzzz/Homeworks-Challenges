@@ -1,0 +1,37 @@
+@use "tokens" as *;
+@use "funciones" as *;
+@use "mixins" as *;
+
+// Piezas que varias secciones comparten con @extend
+
+%quitar-boton {
+  appearance: none;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  padding: 0;
+  cursor: pointer;
+}
+
+%etiqueta-genero {
+  @include dato("2xs");
+  display: inline-block;
+  padding: 1px s(1.5);
+  background: var(--genero);
+  color: $papel-claro;
+  text-transform: uppercase;
+}
+
+%vineta-numero {
+  font-family: $letra-titular;
+  color: $rojo;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+%caja-papel {
+  background: $papel-claro;
+  border: 1px solid $regla-fina;
+}

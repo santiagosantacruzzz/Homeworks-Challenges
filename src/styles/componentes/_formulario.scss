@@ -1,0 +1,215 @@
+@use "../abstracts" as *;
+
+.formulario {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: s(4) s(5);
+
+  @include desde("tableta") {
+    grid-template-columns: 2fr 1.4fr 0.8fr;
+  }
+
+  &__pie {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: s(4);
+  }
+}
+
+.campo {
+  display: grid;
+  gap: s(1);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  grid-column: span 2;
+
+  @include desde("tableta") {
+    grid-column: auto;
+  }
+
+  &--ancho {
+    grid-column: 1 / -1;
+  }
+
+  > span,
+  legend {
+    @include dato("2xs");
+    padding: 0;
+    color: $tinta-suave;
+    text-transform: uppercase;
+
+    small {
+      text-transform: none;
+      color: $tinta-tenue;
+    }
+  }
+
+  input,
+  select {
+    width: 100%;
+    padding: s(2) s(1);
+    border: 0;
+    border-bottom: 1.5px solid $tinta;
+    border-radius: 0;
+    background: $papel-claro;
+    font-size: t("lg");
+
+    &:focus {
+      outline: none;
+      border-bottom-color: $rojo;
+      background: #fff;
+    }
+  }
+
+  .aviso {
+    font-size: t("xs");
+    font-style: italic;
+    color: $rojo;
+  }
+}
+
+.relacionadas {
+  position: relative;
+
+  .opciones {
+    @extend %caja-papel;
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    right: 0;
+    top: 100%;
+    box-shadow: 4px 4px 0 $tinta;
+
+    button {
+      @extend %quitar-boton;
+      width: 100%;
+      padding: s(2) s(3);
+
+      small {
+        color: $tinta-tenue;
+        margin-left: s(2);
+      }
+
+      &:hover,
+      &:focus-visible {
+        background: $tinta;
+        color: $papel-claro;
+      }
+    }
+  }
+}
+
+.fichas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: s(2);
+
+  &:empty {
+    display: none;
+  }
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: s(1);
+    padding: s(0.5) s(1) s(0.5) s(2);
+    border: 1px solid $tinta;
+    font-size: t("sm");
+  }
+
+  button {
+    @extend %quitar-boton;
+    padding: 0 s(1);
+    font-size: t("lg");
+    line-height: 1;
+
+    &:hover {
+      color: $rojo;
+    }
+  }
+}
+
+.mensaje {
+  flex: 1 1 260px;
+  font-size: t("sm");
+  font-style: italic;
+
+  &--ok {
+    color: $verde;
+  }
+  &--error {
+    color: $rojo;
+  }
+}
+
+// ── Ficha técnica ───────────────────────────────────────────
+.complejidad {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: t("sm");
+
+  th {
+    @include dato("2xs");
+    padding: s(1) s(2) s(1) 0;
+    border-bottom: 1.5px solid $tinta;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  td {
+    padding: s(1.5) s(2) s(1.5) 0;
+    border-bottom: 1px solid $regla-fina;
+    vertical-align: top;
+  }
+
+  code {
+    font-size: t("xs");
+  }
+
+  td:last-child {
+    font-style: italic;
+    color: $tinta-suave;
+  }
+
+  // En pantallas pequeñas la nota sobra: se deja estructura, operación y costo
+  th:last-child,
+  td:last-child {
+    display: none;
+
+    @include desde("tableta") {
+      display: table-cell;
+    }
+  }
+
+  &__costo {
+    @include dato("xs");
+    color: $rojo;
+    white-space: nowrap;
+  }
+}
+
+.tecnica__datos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: s(5);
+  border-top: 3px solid $regla;
+
+  div {
+    padding: s(2) s(2) s(2) 0;
+    border-bottom: 1px solid $regla-fina;
+  }
+
+  dt {
+    @include dato("2xs");
+    color: $tinta-tenue;
+    text-transform: uppercase;
+  }
+
+  dd {
+    @include titular("xl");
+  }
+}

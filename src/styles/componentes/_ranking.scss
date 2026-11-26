@@ -1,0 +1,238 @@
+@use "../abstracts" as *;
+
+.ranking__controles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: s(3);
+  margin-bottom: s(4);
+}
+
+.tabla {
+  border-top: 1px solid $regla;
+}
+
+.fila {
+  display: grid;
+  grid-template-columns: s(10) s(9) auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: s(3);
+  padding: s(2.5) 0;
+  border-bottom: 1px solid $regla-fina;
+
+  &[aria-current="true"] {
+    background: linear-gradient(90deg, var(--genero-suave), transparent 70%);
+  }
+
+  &__puesto {
+    @extend %vineta-numero;
+    font-size: t("3xl");
+    text-align: right;
+  }
+
+  &__datos {
+    @extend %quitar-boton;
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+
+    &:hover .fila__titulo {
+      color: var(--genero);
+    }
+  }
+
+  &__titulo {
+    font-weight: 600;
+    font-size: t("lg");
+    line-height: 1.15;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__artista {
+    font-size: t("sm");
+    color: $tinta-suave;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__cifra {
+    @include dato("sm");
+  }
+
+  .barra {
+    @include barra(var(--genero), 3px);
+    margin-top: s(1);
+  }
+
+  // El número 1 ocupa más espacio, como el titular de portada
+  &--lider {
+    padding: s(4) 0;
+
+    .fila__puesto {
+      font-size: t("4xl");
+    }
+    .fila__titulo {
+      @include titular("2xl");
+      white-space: normal;
+    }
+  }
+}
+
+.mov {
+  @include dato("2xs");
+  text-align: center;
+
+  &--sube {
+    color: $verde;
+  }
+  &--baja {
+    color: $rojo;
+  }
+  &--igual {
+    color: $tinta-tenue;
+  }
+  &--nueva {
+    background: $tinta;
+    color: $papel-claro;
+    text-transform: uppercase;
+  }
+}
+
+.portada {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--genero);
+  color: $papel-claro;
+  // líneas de surco, como un disco visto de lado
+  background-image: repeating-linear-gradient(-45deg, rgba($tinta, 0.18) 0 2px, transparent 2px 7px);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(0.25) contrast(1.05);
+  }
+
+  &__iniciales {
+    font-family: $letra-titular;
+    text-transform: uppercase;
+  }
+
+  $tamanos: (
+    "sm": 44px,
+    "md": 56px,
+    "lg": 72px,
+    "xl": 132px,
+  );
+  @each $nombre, $lado in $tamanos {
+    &--#{$nombre} {
+      width: $lado;
+      height: $lado;
+      font-size: $lado * 0.4;
+    }
+  }
+}
+
+// ── Heap por dentro ─────────────────────────────────────────
+.heap {
+  @extend %caja-papel;
+  margin-bottom: s(5);
+  padding: s(4);
+
+  &__nota {
+    font-size: t("sm");
+    margin-bottom: s(3);
+
+    code {
+      font-size: t("xs");
+      background: $papel-oscuro;
+      padding: 0 s(1);
+    }
+  }
+
+  &__arbol {
+    display: grid;
+    gap: s(2);
+  }
+
+  &__nivel {
+    display: grid;
+    grid-template-columns: repeat(var(--columnas), minmax(0, 1fr));
+    gap: s(1);
+  }
+
+  &__mas {
+    @include dato("2xs");
+    color: $tinta-tenue;
+    text-align: center;
+  }
+
+  &__arreglo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    margin-top: s(4);
+  }
+}
+
+.nodo {
+  @extend %quitar-boton;
+  display: grid;
+  justify-items: center;
+  min-width: 0;
+  padding: s(1);
+  border: 1px solid var(--genero);
+  border-top-width: 4px;
+  background: $papel;
+  text-align: center;
+
+  &__i {
+    @include dato("2xs");
+    color: $tinta-tenue;
+  }
+  &__t {
+    font-size: t("xs");
+    font-weight: 600;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  &__v {
+    @include dato("2xs");
+  }
+}
+
+.celda {
+  @include dato("2xs");
+  display: grid;
+  min-width: s(11);
+  padding: 2px s(1);
+  border: 1px solid $regla-fina;
+  text-align: center;
+
+  small {
+    color: $tinta-tenue;
+  }
+}
+
+// Papeles al pasar el cursor por un nodo
+.nodo--foco {
+  background: $tinta;
+  color: $papel-claro;
+  small,
+  .nodo__i {
+    color: $papel-oscuro;
+  }
+}
+.nodo--padre {
+  outline: 2px solid $rojo;
+}
+.nodo--hijo {
+  outline: 2px dashed $verde;
+}

@@ -1,0 +1,114 @@
+@use "../abstracts" as *;
+
+.pagina {
+  max-width: $ancho-maximo;
+  margin: 0 auto;
+  padding: s(4) s(4) s(10);
+
+  @include desde("tableta") {
+    padding: s(6) s(8) s(12);
+  }
+}
+
+// Rejilla de la edición: 12 columnas en escritorio
+.rejilla {
+  display: grid;
+  gap: s(8) s(10);
+  margin-top: s(8);
+
+  @include desde("escritorio") {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+
+    .buscador {
+      grid-column: 1 / -1;
+    }
+    .ranking,
+    .nueva {
+      grid-column: span 7;
+    }
+    .recomendaciones,
+    .tecnica {
+      grid-column: span 5;
+    }
+    // Columna de recomendaciones separada por una regla vertical, como en un diario
+    .recomendaciones,
+    .tecnica {
+      position: relative;
+
+      &::before {
+        content: "";
+        position: absolute;
+        left: s(-5);
+        top: 0;
+        bottom: 0;
+        border-left: 1px solid $regla-fina;
+      }
+    }
+  }
+}
+
+.panel {
+  @include regla-doble;
+  padding-top: s(4);
+
+  &__cabeza {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: s(1) s(4);
+    margin-bottom: s(5);
+    padding-bottom: s(2);
+    border-bottom: 1px solid $regla-fina;
+  }
+
+  &__titulo {
+    @include titular("2xl");
+    display: flex;
+    align-items: baseline;
+    gap: s(3);
+  }
+
+  &__seccion {
+    @include dato("xs");
+    display: inline-grid;
+    place-items: center;
+    width: s(6);
+    height: s(6);
+    background: $rojo;
+    color: $papel-claro;
+    transform: translateY(-4px);
+  }
+
+  &__estructura {
+    @include dato("2xs");
+    color: $tinta-tenue;
+    text-transform: uppercase;
+  }
+}
+
+.alerta {
+  @extend %caja-papel;
+  display: flex;
+  justify-content: space-between;
+  gap: s(4);
+  margin-top: s(4);
+  padding: s(3) s(4);
+  border-left: 4px solid $rojo;
+
+  button {
+    @extend %quitar-boton;
+    font-size: t("xl");
+    line-height: 1;
+  }
+}
+
+.pie {
+  @include dato("2xs");
+  margin-top: s(14);
+  padding-top: s(3);
+  border-top: 1px solid $regla;
+  color: $tinta-tenue;
+  text-align: center;
+  text-transform: uppercase;
+}

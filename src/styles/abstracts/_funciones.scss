@@ -1,0 +1,32 @@
+@use "sass:map";
+@use "sass:math";
+@use "sass:color";
+@use "tokens" as *;
+
+// px → rem
+@function rem($px) {
+  @return math.div($px, 16px) * 1rem;
+}
+
+// Tamaño tipográfico por nombre: t("lg")
+@function t($paso) {
+  @if not map.has-key($escala, $paso) {
+    @error "No existe el paso tipográfico `#{$paso}`.";
+  }
+  @return rem(map.get($escala, $paso));
+}
+
+// Múltiplos de la unidad base: s(4) = 16px
+@function s($n) {
+  @return $u * $n;
+}
+
+// Color de un género: genero("jazz")
+@function genero($nombre) {
+  @return map.get($generos, $nombre);
+}
+
+// Versión "impresa" de un color sobre el papel (tinta diluida)
+@function diluir($color, $cuanto: 82%) {
+  @return color.mix($papel, $color, $cuanto);
+}

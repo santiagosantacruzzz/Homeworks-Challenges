@@ -1,0 +1,75 @@
+@use "sass:map";
+@use "tokens" as *;
+@use "funciones" as *;
+
+// Media query por nombre: @include desde("escritorio") { … }
+@mixin desde($punto) {
+  @media (min-width: map.get($puntos, $punto)) {
+    @content;
+  }
+}
+
+// Doble regla de periódico arriba de cada sección
+@mixin regla-doble($grosor: 3px) {
+  border-top: $grosor solid $regla;
+  box-shadow: inset 0 1px 0 $papel, inset 0 2px 0 $regla;
+}
+
+// Titular condensado en mayúsculas
+@mixin titular($paso: "xl") {
+  font-family: $letra-titular;
+  font-size: t($paso);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+// Texto de datos (monoespaciado, versalitas)
+@mixin dato($paso: "xs") {
+  font-family: $letra-dato;
+  font-size: t($paso);
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+// Botón reutilizable con un tono de tinta
+@mixin boton($fondo, $texto: $papel-claro) {
+  @include dato("xs");
+  display: inline-flex;
+  align-items: center;
+  gap: s(2);
+  padding: s(2) s(3);
+  border: 1.5px solid $fondo;
+  background: $fondo;
+  color: $texto;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform $tiempo, box-shadow $tiempo;
+
+  &:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 2px 2px 0 $tinta;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: progress;
+  }
+}
+
+// Anillo de foco visible y consistente
+@mixin foco($color: $rojo) {
+  &:focus-visible {
+    outline: 2px solid $color;
+    outline-offset: 2px;
+  }
+}
+
+// Barra de progreso tipo "columna de tinta"
+@mixin barra($color: $tinta, $alto: 4px) {
+  display: block;
+  height: $alto;
+  background: linear-gradient(90deg, $color calc(var(--avance, 0) * 100%), transparent 0);
+  transition: background-size $tiempo;
+}

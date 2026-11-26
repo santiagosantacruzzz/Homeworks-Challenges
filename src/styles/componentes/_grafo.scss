@@ -1,0 +1,202 @@
+@use "../abstracts" as *;
+
+.recomendaciones {
+  display: grid;
+  gap: s(4);
+  align-content: start;
+
+  > .boton {
+    justify-self: start;
+  }
+}
+
+.ficha {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: s(4);
+  padding-bottom: s(4);
+  border-bottom: 1px solid $regla-fina;
+
+  &__antetitulo {
+    @extend %etiqueta-genero;
+  }
+
+  &__titulo {
+    @include titular("2xl");
+    margin-top: s(1);
+  }
+
+  &__artista {
+    font-style: italic;
+    color: $tinta-suave;
+  }
+
+  &__cifra {
+    @include dato("md");
+    margin: s(2) 0;
+
+    small {
+      font-size: t("2xs");
+      color: $tinta-tenue;
+    }
+  }
+
+  &__audio {
+    width: 100%;
+    height: s(9);
+  }
+
+  &__api {
+    @include dato("2xs");
+    margin-top: s(2);
+    color: $tinta-tenue;
+  }
+}
+
+// ── Mapa de anillos ─────────────────────────────────────────
+.mapa {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+
+  &__orbita {
+    fill: none;
+    stroke: $regla-fina;
+    stroke-dasharray: 2 4;
+  }
+
+  &__rotulo {
+    font-family: $letra-dato;
+    font-size: 10px;
+    fill: $tinta-tenue;
+    text-transform: uppercase;
+  }
+
+  &__arista {
+    stroke: $tinta-tenue;
+    stroke-width: 1;
+    opacity: 0.55;
+
+    &--directa {
+      stroke: $tinta;
+      stroke-width: 1.6;
+      opacity: 1;
+    }
+  }
+
+  &__nodo {
+    cursor: pointer;
+    outline: none;
+
+    circle {
+      fill: var(--genero);
+      stroke: $papel;
+      stroke-width: 2;
+      transition: r $tiempo;
+    }
+
+    &--n2 circle {
+      fill: $papel-claro;
+      stroke: var(--genero);
+      stroke-width: 2.5;
+    }
+
+    &:hover circle,
+    &:focus-visible circle {
+      stroke: $rojo;
+      stroke-width: 3;
+    }
+
+    &:hover .mapa__texto,
+    &:focus-visible .mapa__texto {
+      fill: $rojo;
+    }
+  }
+
+  &__texto {
+    font-family: $letra-texto;
+    font-size: 12.5px;
+    fill: $tinta;
+    paint-order: stroke;
+    stroke: $papel;
+    stroke-width: 3px;
+  }
+
+  &__nodo--n2 .mapa__texto {
+    font-size: 11px;
+    fill: $tinta-suave;
+  }
+
+  &__centro {
+    circle {
+      fill: var(--genero);
+      stroke: $tinta;
+      stroke-width: 3;
+    }
+    text {
+      fill: $papel-claro;
+      font-size: 22px;
+    }
+  }
+}
+
+.sugeridas {
+  display: grid;
+  border-top: 1px solid $regla;
+
+  @include desde("tableta") {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: s(5);
+  }
+}
+
+.sugerida {
+  border-bottom: 1px solid $regla-fina;
+
+  button {
+    @extend %quitar-boton;
+    display: grid;
+    width: 100%;
+    padding: s(2) 0 s(2) s(3);
+    border-left: 4px solid var(--genero);
+  }
+
+  &--n2 button {
+    border-left-style: dotted;
+  }
+
+  &__nivel {
+    @include dato("2xs");
+    color: $rojo;
+    text-transform: uppercase;
+  }
+
+  &__titulo {
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  &__artista {
+    font-size: t("sm");
+    color: $tinta-suave;
+  }
+
+  &__razon {
+    font-size: t("xs");
+    font-style: italic;
+    color: $tinta-tenue;
+  }
+
+  button:hover .sugerida__titulo {
+    color: var(--genero);
+  }
+}
+
+.adyacencia {
+  @extend %caja-papel;
+  margin: 0;
+  padding: s(3);
+  font-size: t("xs");
+  line-height: 1.6;
+  overflow-x: auto;
+}

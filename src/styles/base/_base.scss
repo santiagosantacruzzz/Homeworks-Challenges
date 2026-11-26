@@ -1,0 +1,164 @@
+@use "sass:map";
+@use "../abstracts" as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  background-color: $papel;
+  // Grano de papel muy suave, sin imágenes externas
+  background-image: radial-gradient(rgba($tinta, 0.035) 1px, transparent 1px);
+  background-size: 3px 3px;
+  color: $tinta;
+  font-family: $letra-texto;
+  font-size: t("md");
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p,
+ol,
+ul,
+dl,
+dd,
+figure {
+  margin: 0;
+}
+
+ol,
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button,
+a,
+input,
+select,
+[tabindex] {
+  @include foco;
+}
+
+code,
+pre {
+  font-family: $letra-dato;
+}
+
+mark {
+  background: none;
+  color: $rojo;
+  text-decoration: underline 2px;
+  text-underline-offset: 3px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+// Cada género define --genero; el resto de estilos solo lee la variable
+@each $nombre, $color in $generos {
+  .genero--#{$nombre} {
+    --genero: #{$color};
+    --genero-suave: #{diluir($color)};
+  }
+}
+
+// ── Piezas comunes ─────────────────────────────────────────
+.boton {
+  &--tinta {
+    @include boton($tinta);
+  }
+  &--rojo {
+    @include boton($rojo);
+  }
+  &--linea {
+    @include boton(transparent, $tinta);
+    border-color: $tinta;
+  }
+}
+
+.etiqueta {
+  @extend %etiqueta-genero;
+}
+
+.reproducir {
+  @extend %quitar-boton;
+  display: grid;
+  place-items: center;
+  width: s(8);
+  height: s(8);
+  border: 1.5px solid $tinta;
+  border-radius: 50%;
+  font-size: t("xs");
+  transition: background $tiempo, color $tiempo;
+
+  &:hover {
+    background: $tinta;
+    color: $papel-claro;
+  }
+}
+
+.conmutador {
+  display: inline-flex;
+  border: 1.5px solid $tinta;
+
+  button {
+    @extend %quitar-boton;
+    @include dato("xs");
+    padding: s(1.5) s(3);
+    text-transform: uppercase;
+
+    small {
+      color: $tinta-tenue;
+      margin-left: s(1);
+    }
+
+    & + button {
+      border-left: 1.5px solid $tinta;
+    }
+
+    &[aria-pressed="true"] {
+      background: $tinta;
+      color: $papel-claro;
+
+      small {
+        color: $papel-oscuro;
+      }
+    }
+  }
+}
+
+.vacio {
+  font-style: italic;
+  color: $tinta-suave;
+  padding: s(4) 0;
+}
+
+.cargando {
+  @include titular("2xl");
+  text-align: center;
+  padding: s(20) 0;
+}

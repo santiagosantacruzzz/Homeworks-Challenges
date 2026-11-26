@@ -1,0 +1,13 @@
+// ════════════════════════════════════════════════════════════
+// Repertorio · hoja principal
+// abstracts/  → tokens, funciones, mixins y placeholders (no generan CSS solos)
+// base/       → reset, colores por género (@each) y piezas comunes
+// componentes/→ un parcial por sección del dashboard
+// ════════════════════════════════════════════════════════════
+@use "base/base";
+@use "componentes/pagina";
+@use "componentes/cabecera";
+@use "componentes/buscador";
+@use "componentes/ranking";
+@use "componentes/grafo";
+@use "componentes/formulario";

@@ -1,0 +1,226 @@
+@use "../abstracts" as *;
+
+.buscador {
+  &__campo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: s(3);
+
+    input {
+      flex: 1 1 320px;
+      min-width: 0;
+      padding: s(2) 0;
+      border: 0;
+      border-bottom: 3px solid $tinta;
+      background: transparent;
+      font-family: $letra-texto;
+      font-size: t("2xl");
+      font-style: italic;
+      outline: none;
+
+      &::placeholder {
+        color: $tinta-tenue;
+      }
+
+      &:focus {
+        border-bottom-color: $rojo;
+      }
+    }
+
+    .conmutador {
+      align-self: center;
+    }
+  }
+
+  &__traza {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: s(3) s(6);
+    margin-top: s(4);
+  }
+
+  &__lectura {
+    @include dato("xs");
+    display: grid;
+    gap: s(1);
+
+    .si {
+      color: $verde;
+    }
+    .no {
+      color: $rojo;
+    }
+  }
+
+  &__conteo {
+    @include dato("2xs");
+    margin: s(5) 0 s(2);
+    color: $tinta-tenue;
+    text-transform: uppercase;
+  }
+}
+
+.letra {
+  @extend %quitar-boton;
+  @include dato("xs");
+  min-width: s(6);
+  margin-right: s(1);
+  padding: 0 s(1);
+  border: 1px solid $tinta;
+  text-align: center;
+
+  &:hover {
+    background: $tinta;
+    color: $papel-claro;
+  }
+}
+
+// Camino del Trie: una caja por letra unida por una línea
+.camino {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: s(2);
+
+  &__paso {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    min-width: s(8);
+    padding-right: s(3);
+
+    // conector con el paso siguiente
+    &:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: s(4);
+      right: 0;
+      width: s(3);
+      border-top: 1.5px solid $tinta;
+    }
+
+    &--roto {
+      .camino__letra {
+        border-style: dashed;
+        border-color: $rojo;
+        color: $rojo;
+        text-decoration: line-through;
+      }
+      &::after {
+        border-top-style: dashed !important;
+        border-color: $rojo !important;
+      }
+    }
+
+    &--fin .camino__letra {
+      box-shadow: inset 0 -4px 0 $rojo;
+    }
+
+    &--raiz .camino__letra {
+      background: $tinta;
+      color: $papel-claro;
+    }
+  }
+
+  &__letra {
+    display: grid;
+    place-items: center;
+    width: s(8);
+    height: s(8);
+    border: 1.5px solid $tinta;
+    background: $papel-claro;
+    font-family: $letra-dato;
+    font-size: t("md");
+    font-weight: 500;
+  }
+
+  &__nota {
+    @include dato("2xs");
+    color: $tinta-tenue;
+  }
+}
+
+.resultados {
+  display: grid;
+  gap: 0 s(8);
+  counter-reset: res;
+
+  @include desde("tableta") {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include desde("escritorio") {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.resultado {
+  display: flex;
+  align-items: center;
+  gap: s(2);
+  border-bottom: 1px solid $regla-fina;
+
+  &__cuerpo {
+    @extend %quitar-boton;
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: s(7) 1fr auto;
+    grid-template-areas:
+      "n titulo cifra"
+      "n meta cifra";
+    column-gap: s(2);
+    padding: s(2) 0;
+
+    &[aria-current="true"] .resultado__titulo {
+      text-decoration: underline 2px var(--genero);
+      text-underline-offset: 4px;
+    }
+
+    &:hover .resultado__titulo {
+      color: var(--genero);
+    }
+  }
+
+  &__n {
+    @extend %vineta-numero;
+    grid-area: n;
+    font-size: t("xl");
+  }
+
+  &__titulo {
+    grid-area: titulo;
+    font-weight: 600;
+    font-size: t("lg");
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__meta {
+    grid-area: meta;
+    font-size: t("sm");
+    color: $tinta-suave;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__cifra {
+    @include dato("xs");
+    grid-area: cifra;
+    align-self: center;
+  }
+}
+
+.sello {
+  @include dato("2xs");
+  margin-left: s(2);
+  padding: 0 s(1);
+  border: 1px solid $verde;
+  color: $verde;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
