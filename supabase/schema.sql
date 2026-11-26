@@ -26,7 +26,12 @@ create table if not exists relaciones (
   unique (cancion_a, cancion_b)
 );
 
--- 3. RLS: cualquiera puede leer el catálogo y proponer canciones nuevas,
+-- 3. Permisos base del Data API. Los proyectos nuevos no siempre se los dan
+--    a las tablas creadas por SQL; sin esto la app recibe 0 filas.
+grant usage on schema public to anon, authenticated;
+grant select, insert on canciones, relaciones to anon, authenticated;
+
+-- 4. RLS: cualquiera puede leer el catálogo y proponer canciones nuevas,
 --    pero las canciones nuevas arrancan en 0 reproducciones.
 --    Nadie puede editar el contador directamente: solo con reproducir().
 alter table canciones enable row level security;
@@ -44,7 +49,7 @@ create policy "leer relaciones" on relaciones
 create policy "agregar relaciones" on relaciones
   for insert to anon, authenticated with check (true);
 
--- 4. Sumar reproducciones de forma atómica.
+-- 5. Sumar reproducciones de forma atómica.
 --    security definer: corre con permisos del dueño, así el UPDATE no
 --    necesita una política abierta en la tabla.
 --    `veces` tiene tope para que el botón "simular tendencia" no se abuse.
@@ -63,7 +68,10 @@ $$;
 revoke all on function reproducir(bigint, int) from public;
 grant execute on function reproducir(bigint, int) to anon, authenticated;
 
--- 5. Realtime: el ranking (Max Heap) se reacomoda en vivo
+-- 6. Realtime: el ranking (Max Heap) se reacomoda en vivo
 --    cuando alguien reproduce o agrega una canción.
 alter publication supabase_realtime add table canciones;
 alter publication supabase_realtime add table relaciones;
+
+-- Recargar el esquema del Data API
+notify pgrst, 'reload schema';
