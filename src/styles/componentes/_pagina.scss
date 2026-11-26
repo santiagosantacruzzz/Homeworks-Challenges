@@ -75,7 +75,7 @@
     place-items: center;
     width: s(6);
     height: s(6);
-    background: $rojo;
+    background: $azul;
     color: $papel-claro;
     transform: translateY(-4px);
   }
@@ -94,7 +94,7 @@
   gap: s(4);
   margin-top: s(4);
   padding: s(3) s(4);
-  border-left: 4px solid $rojo;
+  border-left: 4px solid $tinta;
 
   button {
     @extend %quitar-boton;

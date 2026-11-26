@@ -47,7 +47,7 @@ export default function Ranking() {
           ))}
         </div>
         <div className="ranking__acciones">
-          <button type="button" className="boton boton--rojo" onClick={simularTendencia}>
+          <button type="button" className="boton boton--azul" onClick={simularTendencia}>
             Simular tendencia
           </button>
           <button type="button" className="boton boton--linea" aria-expanded={verHeap} onClick={() => setVerHeap((v) => !v)}>

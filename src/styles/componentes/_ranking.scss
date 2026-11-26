@@ -92,10 +92,10 @@
   text-align: center;
 
   &--sube {
-    color: $verde;
+    color: $azul;
   }
   &--baja {
-    color: $rojo;
+    color: $tinta;
   }
   &--igual {
     color: $tinta-tenue;
@@ -237,8 +237,8 @@
   }
 }
 .nodo--padre {
-  outline: 2px solid $rojo;
+  outline: 2px solid $tinta;
 }
 .nodo--hijo {
-  outline: 2px dashed $verde;
+  outline: 2px dashed $azul;
 }

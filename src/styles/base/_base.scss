@@ -14,9 +14,6 @@ html {
 body {
   margin: 0;
   background-color: $papel;
-  // Grano de papel muy suave, sin imágenes externas
-  background-image: radial-gradient(rgba($tinta, 0.035) 1px, transparent 1px);
-  background-size: 3px 3px;
   color: $tinta;
   font-family: $letra-texto;
   font-size: t("md");
@@ -64,7 +61,7 @@ pre {
 
 mark {
   background: none;
-  color: $rojo;
+  color: $azul;
   text-decoration: underline 2px;
   text-underline-offset: 3px;
 }
@@ -91,8 +88,8 @@ mark {
   &--tinta {
     @include boton($tinta);
   }
-  &--rojo {
-    @include boton($rojo);
+  &--azul {
+    @include boton($azul);
   }
   &--linea {
     @include boton(transparent, $tinta);

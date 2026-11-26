@@ -3,26 +3,27 @@
 // Todo el dashboard sale de estas variables y mapas.
 // ════════════════════════════════════════════════════════════
 
-// ── Papel y tinta ───────────────────────────────────────────
-$papel: #f2ebdd;
-$papel-claro: #faf6ee;
-$papel-oscuro: #e4dac6;
-$tinta: #1c1a16;
-$tinta-suave: #4f4a40;
-$tinta-tenue: #857d6e;
-$regla: #1c1a16;
-$regla-fina: #c9bda5;
-$rojo: #c8102e; // acento único: puestos, cortes del Trie, alertas
-$verde: #2d6a4f; // sube en el ranking
+// ── Paleta: azul rey como color principal, el resto en blanco y negro ──
+$azul: #0038c7; // azul rey: titular, puestos, botones, foco y lo que "sube"
+$azul-oscuro: #00237d;
+$papel: #ffffff;
+$papel-claro: #ffffff;
+$papel-oscuro: #f0f0f0;
+$tinta: #000000;
+$tinta-suave: #2b2b2b;
+$tinta-tenue: #6b6b6b;
+$regla: #000000;
+$regla-fina: #d6d6d6;
 
 // ── Color de cada género (se recorre con @each) ─────────────
+// Solo azul rey y negro; el nombre del género siempre va escrito en la etiqueta
 $generos: (
-  "urbano": #b8326f,
-  "plena": #c4511f,
-  "regional": #86681a,
-  "reggaeton-clasico": #2f4b7c,
-  "tropical": #1f6f63,
-  "kpop": #6f3c86,
+  "urbano": $azul,
+  "plena": $tinta,
+  "regional": $azul-oscuro,
+  "reggaeton-clasico": $tinta,
+  "tropical": $azul-oscuro,
+  "kpop": $azul,
 );
 
 // ── Tipografía ──────────────────────────────────────────────

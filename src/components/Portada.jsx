@@ -4,6 +4,7 @@
  */
 export default function Portada({ cancion, detalle, tamano = "md" }) {
   const iniciales = cancion.titulo
+    .replace(/[^\p{L}\p{N}\s]/gu, "") // sin paréntesis ni signos
     .split(/\s+/)
     .filter((p) => p.length > 2 || /^[A-ZÁÉÍÓÚÑ]/.test(p))
     .slice(0, 2)

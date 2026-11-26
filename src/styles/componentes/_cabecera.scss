@@ -21,6 +21,7 @@
 
   &__titulo {
     @include titular("4xl");
+    color: $azul;
     margin-top: s(4);
     letter-spacing: 0.08em;
 
@@ -77,10 +78,10 @@
 
 .fuente {
   &--supabase {
-    color: $verde;
+    color: $azul;
   }
   &--ejemplo {
-    color: $rojo;
+    color: $tinta;
   }
 }
 
@@ -96,7 +97,7 @@
   &__rotulo {
     @include titular("sm");
     padding: s(1) s(2);
-    background: $rojo;
+    background: $azul;
     color: $papel-claro;
     white-space: nowrap;
   }
@@ -116,7 +117,7 @@
     time {
       @include dato("xs");
       font-style: normal;
-      color: $rojo;
+      color: $azul;
     }
   }
 }

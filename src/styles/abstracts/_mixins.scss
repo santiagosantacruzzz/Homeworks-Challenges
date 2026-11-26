@@ -59,7 +59,7 @@
 }
 
 // Anillo de foco visible y consistente
-@mixin foco($color: $rojo) {
+@mixin foco($color: $azul) {
   &:focus-visible {
     outline: 2px solid $color;
     outline-offset: 2px;

@@ -144,7 +144,7 @@ export default function NuevaCancion() {
         </fieldset>
 
         <div className="formulario__pie">
-          <button type="submit" className="boton boton--rojo" disabled={enviando}>
+          <button type="submit" className="boton boton--azul" disabled={enviando}>
             {enviando ? "Guardando…" : "Insertar canción"}
           </button>
           {estado.tipo && (
