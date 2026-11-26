@@ -33,6 +33,17 @@ Todo se muestra en un **panel con Sass** con forma de cartelera impresa. Los dat
   - Las carátulas del TOP se piden con `Promise.allSettled`: si iTunes falla, se dibuja una portada tipográfica y el panel sigue funcionando.
   - Las consultas a Supabase se lanzan juntas con `Promise.all`.
 
+## Datos
+
+Las 36 canciones son lo más escuchado en Spotify Colombia la semana del 19 de noviembre de 2026 (Spotify Charts, vía soundcharts.com). `reproducciones` son los streams semanales de esa semana en Colombia. Se quitaron dos entradas: una sin artista identificado y una de título explícito.
+
+Las aristas del grafo siguen tres reglas:
+1. Se conectan las canciones que comparten un artista (por ejemplo Feid, Blessd, Køddy G o Fuerza Regida).
+2. Se conectan las canciones del mismo género que quedan seguidas en el chart.
+3. Hay seis puentes entre géneros, puestos a mano.
+
+El grafo queda conexo: desde cualquier canción se llega a todas.
+
 ## Complejidad
 
 | Operación | Costo |
@@ -50,7 +61,7 @@ Todo se muestra en un **panel con Sass** con forma de cartelera impresa. Los dat
 ```
 src/
 ├── estructuras/        Node, Trie, MaxHeap, Graph, Catalogo (une las tres), normalizar
-├── data/mock.js        36 canciones y 53 relaciones de ejemplo
+├── data/mock.js        Top 36 de Spotify Colombia (semana del 19 nov 2026) y sus 63 relaciones
 ├── lib/supabase.js     cliente único
 ├── services/           consultas, inserciones, rpc y Realtime de Supabase
 ├── api/                cliente http (fetch) y API de iTunes
@@ -82,7 +93,7 @@ Para probar Realtime se abren dos pestañas. Al reproducir o simular una tendenc
 
 ## Uso rápido
 
-- Escribe en el buscador, por ejemplo `la`, `la b` o `lax`, para ver el camino del Trie, las letras que siguen y `search()`.
+- Escribe en el buscador, por ejemplo `pa`, `paradixe (`, `t` o `tx`, para ver el camino del Trie, las letras que siguen y `search()`.
 - **Ver el heap por dentro** muestra el arreglo y el árbol por niveles. Al pasar el cursor se marcan el padre y los hijos.
 - **Simular tendencia** le suma reproducciones a una canción del TOP 16. El heap hace `percolateUp` y aparecen las flechas ▲ ▼.
 - Haz clic en cualquier canción para ver sus recomendaciones en el mapa de anillos. El nivel 1 son los vecinos directos y el nivel 2 sus vecinos.

@@ -1,20 +1,23 @@
 /**
- * Datos de ejemplo. Se usan cuando no hay .env de Supabase y también
- * son la semilla de supabase/schema.sql (mismo contenido).
- * Los títulos se escogieron para que compartan prefijos ("la", "c", "b", "he")
- * y así se note cómo el Trie reutiliza el camino.
+ * Catálogo: lo más escuchado en Spotify Colombia, semana del 19 de noviembre de 2026
+ * (fuente: Spotify Charts vía soundcharts.com). `reproducciones` son los streams
+ * semanales en Colombia de esa semana, redondeados como los publica el chart.
+ * Se dejaron por fuera dos entradas: una sin artista identificado y una de título explícito.
+ *
+ * Se usan cuando no hay .env de Supabase y son también la semilla de supabase/semilla.sql.
+ * Varios títulos comparten prefijo ("PARADIXE", "pa", "co", "s", "t", "e") y así
+ * se ve cómo el Trie reutiliza el mismo camino.
  */
 export const GENEROS = {
-  salsa: "Salsa",
-  "rock-es": "Rock en español",
-  "pop-latino": "Pop latino",
-  rock: "Rock clásico",
-  jazz: "Jazz",
-  clasica: "Clásica",
-  bolero: "Bolero y folclor",
+  urbano: "Urbano",
+  plena: "Plena panameña",
+  regional: "Regional mexicano",
+  "reggaeton-clasico": "Reggaetón clásico",
+  tropical: "Tropical",
+  kpop: "K-pop",
 };
 
-const c = (id, titulo, artista, genero, anio, reproducciones) => ({
+const c = (id, titulo, artista, genero, reproducciones, anio = null) => ({
   id: String(id),
   titulo,
   artista,
@@ -24,65 +27,89 @@ const c = (id, titulo, artista, genero, anio, reproducciones) => ({
 });
 
 export const CANCIONES = [
-  c(1, "La Vida es un Carnaval", "Celia Cruz", "salsa", 1998, 912400),
-  c(2, "Cali Pachanguero", "Grupo Niche", "salsa", 1984, 874300),
-  c(3, "Pedro Navaja", "Rubén Blades", "salsa", 1978, 655200),
-  c(4, "Vivir mi Vida", "Marc Anthony", "salsa", 2013, 1203900),
-  c(5, "Llorarás", "Oscar D'León", "salsa", 1975, 431800),
-  c(6, "Rebelión", "Joe Arroyo", "salsa", 1986, 702100),
-  c(7, "De Música Ligera", "Soda Stereo", "rock-es", 1990, 988600),
-  c(8, "Persiana Americana", "Soda Stereo", "rock-es", 1986, 712900),
-  c(9, "Lamento Boliviano", "Enanitos Verdes", "rock-es", 1994, 645700),
-  c(10, "La Flaca", "Jarabe de Palo", "rock-es", 1996, 523400),
-  c(11, "Labios Compartidos", "Maná", "rock-es", 2006, 598800),
-  c(12, "La Camisa Negra", "Juanes", "pop-latino", 2004, 1065300),
-  c(13, "Despacito", "Luis Fonsi", "pop-latino", 2017, 1498200),
-  c(14, "Danza Kuduro", "Don Omar", "pop-latino", 2010, 1144700),
-  c(15, "Tusa", "Karol G", "pop-latino", 2019, 1321500),
-  c(16, "La Bicicleta", "Carlos Vives y Shakira", "pop-latino", 2016, 957200),
-  c(17, "Hips Don't Lie", "Shakira", "pop-latino", 2006, 1187600),
-  c(18, "Bachata Rosa", "Juan Luis Guerra", "pop-latino", 1990, 488900),
-  c(19, "Suavemente", "Elvis Crespo", "pop-latino", 1998, 611300),
-  c(20, "Bohemian Rhapsody", "Queen", "rock", 1975, 1376400),
-  c(21, "Hotel California", "Eagles", "rock", 1976, 1012800),
-  c(22, "Hey Jude", "The Beatles", "rock", 1968, 934500),
-  c(23, "Let It Be", "The Beatles", "rock", 1970, 902300),
-  c(24, "Imagine", "John Lennon", "rock", 1971, 1095100),
-  c(25, "Billie Jean", "Michael Jackson", "rock", 1982, 1254800),
-  c(26, "La Bamba", "Ritchie Valens", "rock", 1958, 566100),
-  c(27, "Take Five", "Dave Brubeck Quartet", "jazz", 1959, 402700),
-  c(28, "So What", "Miles Davis", "jazz", 1959, 356900),
-  c(29, "Fly Me to the Moon", "Frank Sinatra", "jazz", 1964, 811200),
-  c(30, "What a Wonderful World", "Louis Armstrong", "jazz", 1967, 968700),
-  c(31, "Clair de Lune", "Claude Debussy", "clasica", 1905, 742600),
-  c(32, "Para Elisa", "Ludwig van Beethoven", "clasica", 1810, 618300),
-  c(33, "Canon en Re", "Johann Pachelbel", "clasica", 1680, 589400),
-  c(34, "Las Cuatro Estaciones", "Antonio Vivaldi", "clasica", 1725, 677500),
-  c(35, "Bésame Mucho", "Consuelo Velázquez", "bolero", 1940, 721900),
-  c(36, "Gracias a la Vida", "Mercedes Sosa", "bolero", 1971, 503600),
+  c(1, "Peli De Terror", "Køddy G & THE FAVORITES & Fharid On the Beat", "plena", 2300000),
+  c(2, "PARADIXE", "Feid", "urbano", 1900000),
+  c(3, "CAPCANA COCOA", "Blessd & Anuel AA", "urbano", 1400000),
+  c(4, "BbY WOW", "KAROL G & Judeline & rusowsky", "urbano", 1300000),
+  c(5, "Happy Monday (W Sound 10)", "W Sound & Hades66 & Ovy On The Drums", "urbano", 1100000),
+  c(6, "GALACTICOS", "Bigg Danny & El Americano 4KT & El Goldo", "urbano", 971000),
+  c(7, "50 MIL PIEX", "Feid & Granuja", "urbano", 869000),
+  c(8, "MERO TOTE", "Blessd & De La Rose & Los Money Makers", "urbano", 856000),
+  c(9, "Te Imagino", "Myke Towers", "urbano", 851000),
+  c(10, "GAMINA", "Kris R. & Los Money Makers", "urbano", 838000),
+  c(11, "PARADIXE (REMIX)", "Feid & El Americano 4KT & Omar Courtz & Pirlo & Myke Towers", "urbano", 786000),
+  c(12, "Hagalo", "Køddy G & COLVISION COMPANY & Pty Audio & Frvnz_la_F", "plena", 771000),
+  c(13, "El Beneficio De La Duda", "Grupo Firme", "regional", 757000),
+  c(14, "Todo Lo Fue", "Lenin Ramírez", "regional", 733000),
+  c(15, "Lento", "Køddy G & THE FAVORITES & 1cewayz", "plena", 714000),
+  c(16, "Cuando No Era Cantante RMX", "Yung Beef & Anuel AA & Fuerza Regida & El Bogueto", "urbano", 708000),
+  c(17, "Solos", "Tony Dize & Plan B", "reggaeton-clasico", 702000),
+  c(18, "SUPERSTAR", "Blessd & Los Money Makers", "urbano", 696000),
+  c(19, "COQUETA", "Fuerza Regida & Grupo Frontera", "regional", 692000),
+  c(20, "COMPA COLETO (uy_como)", "ARIA VEGA", "urbano", 692000),
+  c(21, "Bachateo", "Køddy G & COLVISION COMPANY & Pty Audio & Frvnz_la_F", "plena", 678000),
+  c(22, "SWIM", "BTS", "kpop", 673000),
+  c(23, "Hace Mucho Tiempo", "Ele A El Dominio", "urbano", 647000),
+  c(24, "Dichavate", "Ya Ice Dilan & Rey Tony & Helabusador & JipMusic Global & Dj Honda", "urbano", 645000),
+  c(25, "Tu Boda", "Oscar Maydon & Fuerza Regida", "regional", 644000),
+  c(26, "POR SI MAÑANA NO ESTOY", "Omar Courtz", "urbano", 609000),
+  c(27, "Es un Secreto", "Plan B", "reggaeton-clasico", 605000),
+  c(28, "Las Muñequitas", "Mr Plata & El Americano 4KT", "urbano", 603000),
+  c(29, "Dame Hombro", "Bulin 47 & Kevin Wai & Breyco En Producidera", "urbano", 595000),
+  c(30, "El Telefono", "Héctor \"El Father\" & Wisin & Yandel", "reggaeton-clasico", 590000),
+  c(31, "Suzuki (from GTAVI: The Album)", "Fuerza Regida & Grand Theft Auto VI", "regional", 589000),
+  c(32, "Tormentos", "Rodolfo Aicardi", "tropical", 586000),
+  c(33, "TUKI TUKI", "Kris R. & GeezyDee", "urbano", 585000),
+  c(34, "UNA BABY EN SANTIAGO", "Lil Naay", "urbano", 581000),
+  c(35, "EXCESOS", "Fuerza Regida", "regional", 579000),
+  c(36, "SORNERO", "Blessd", "urbano", 576000),
 ];
 
 /**
- * Aristas del grafo no dirigido: [idA, idB] = "estas dos canciones son similares".
- * Cada género forma un grupo y algunas aristas cruzan géneros (puentes),
- * para que las recomendaciones a 2 saltos descubran música nueva.
+ * Aristas del grafo no dirigido ("estas dos canciones son similares").
+ * Regla para armarlas, en este orden:
+ *   1. Comparten al menos un artista (Feid, Blessd, Køddy G, Fuerza Regida…).
+ *   2. Son del mismo género y quedan seguidas en el chart (cadena por género).
+ *   3. Unos pocos puentes entre géneros, puestos a mano.
  */
-export const RELACIONES = [
-  // salsa
-  [1, 2], [1, 4], [1, 6], [2, 3], [2, 6], [3, 5], [3, 6], [4, 5],
-  // rock en español
-  [7, 8], [7, 9], [8, 9], [9, 10], [10, 11], [7, 11],
-  // pop latino
-  [12, 16], [12, 13], [13, 14], [13, 15], [14, 17], [15, 17], [16, 17], [18, 19], [14, 19],
-  // rock clásico
-  [20, 21], [20, 22], [22, 23], [22, 24], [23, 24], [21, 25], [25, 20], [26, 21],
-  // jazz
-  [27, 28], [27, 29], [29, 30], [28, 30],
-  // clásica
-  [31, 32], [31, 33], [32, 34], [33, 34],
-  // bolero y folclor
-  [35, 36],
-  // puentes entre géneros
-  [12, 10], [12, 11], [16, 1], [18, 35], [19, 4], [26, 1], [24, 30],
-  [29, 35], [31, 27], [36, 9], [25, 17], [7, 20], [33, 23],
-].map(([a, b]) => [String(a), String(b)]);
+const artistas = (cancion) => cancion.artista.split(/\s*&\s*/).map((a) => a.toLowerCase());
+
+const PUENTES = [
+  [22, 4], // SWIM ↔ BbY WOW (los dos hits globales del momento)
+  [1, 5], // Peli De Terror ↔ Happy Monday
+  [30, 3], // El Telefono ↔ CAPCANA COCOA
+  [32, 13], // Tormentos ↔ El Beneficio De La Duda
+  [17, 9], // Solos ↔ Te Imagino
+  [16, 25], // Cuando No Era Cantante RMX ↔ Tu Boda
+];
+
+function armarRelaciones(canciones) {
+  const aristas = new Set();
+  const agregar = (a, b) => {
+    if (a === b) return;
+    const [x, y] = [Number(a), Number(b)].sort((p, q) => p - q);
+    aristas.add(`${x}-${y}`);
+  };
+
+  // 1. artista en común
+  for (let i = 0; i < canciones.length; i++) {
+    for (let j = i + 1; j < canciones.length; j++) {
+      const ai = artistas(canciones[i]);
+      if (artistas(canciones[j]).some((a) => ai.includes(a))) agregar(canciones[i].id, canciones[j].id);
+    }
+  }
+
+  // 2. cadena por género, en orden del chart (cada una con la siguiente)
+  const porGenero = {};
+  for (const cancion of canciones) (porGenero[cancion.genero] ??= []).push(cancion.id);
+  for (const ids of Object.values(porGenero)) {
+    for (let i = 0; i + 1 < ids.length; i++) agregar(ids[i], ids[i + 1]);
+  }
+
+  // 3. puentes
+  for (const [a, b] of PUENTES) agregar(a, b);
+
+  return [...aristas].map((par) => par.split("-"));
+}
+
+export const RELACIONES = armarRelaciones(CANCIONES);

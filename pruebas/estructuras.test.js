@@ -75,21 +75,24 @@ test("Graph no dirigido y recomendación", () => {
 test("Catalogo con datos mock", () => {
   const cat = Catalogo.desde(CANCIONES, RELACIONES);
   assert.equal(cat.tamano, 36);
-  assert.equal(cat.top(1)[0].titulo, "Despacito");
+  assert.equal(cat.top(1)[0].titulo, "Peli De Terror");
   assert.equal(cat.grafo.totalAristas(), RELACIONES.length);
   // Challenge 12: top K por prefijo
-  const top = cat.trie.searchTopK("la", 2).map(c => c.titulo);
-  assert.deepEqual(top, ["La Camisa Negra", "La Bicicleta"]);
+  const top = cat.trie.searchTopK("pa", 2).map(c => c.titulo);
+  assert.deepEqual(top, ["PARADIXE", "PARADIXE (REMIX)"]);
+  assert.equal(cat.trie.search("por si mañana no estoy"), true);
+  // Feid comparte artista en sus tres canciones
+  assert.ok(cat.grafo.printAdjacency("2").includes("7") && cat.grafo.printAdjacency("2").includes("11"));
   // reproducciones mueven el ranking
-  const flaca = cat.trie.buscar("la flaca")[0];
-  cat.actualizar({ ...flaca, reproducciones: 2_000_000 });
-  assert.equal(cat.top(1)[0].titulo, "La Flaca");
-  assert.equal(cat.trie.searchTopK("la", 1)[0].titulo, "La Flaca");
+  const flaca = cat.trie.buscar("tormentos")[0];
+  cat.actualizar({ ...flaca, reproducciones: 3_000_000 });
+  assert.equal(cat.top(1)[0].titulo, "Tormentos");
+  assert.equal(cat.trie.searchTopK("t", 1)[0].titulo, "Tormentos");
   assert.equal(cat.posiciones().get(flaca.id), 1);
   const rec = cat.recomendar("1");
   assert.ok(rec.every(r => r.cancion && r.id !== "1"));
   console.log(rec.slice(0,6).map(r => `${r.nivel} ${r.cancion.titulo} (${r.enComun.length})`).join("\n"));
   cat.eliminar(flaca.id);
-  assert.equal(cat.trie.search("la flaca"), false);
+  assert.equal(cat.trie.search("tormentos"), false);
   assert.equal(cat.grafo.searchNode(flaca.id), undefined);
 });

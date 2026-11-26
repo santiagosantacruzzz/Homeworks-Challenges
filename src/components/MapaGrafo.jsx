@@ -55,6 +55,14 @@ export default function MapaGrafo({ centro, recomendaciones, adyacencia, alElegi
   }
 
   const etiqueta = (r, p, radio) => {
+    // Anillo 1: debajo del nodo, para no chocar con las etiquetas del anillo 2
+    if (r.nivel === 1) {
+      return (
+        <text x={p.x} y={p.y + radio + 13} textAnchor="middle" className="mapa__texto">
+          {recortar(r.cancion.titulo, 18)}
+        </text>
+      );
+    }
     const derecha = Math.cos(p.angulo) >= -0.01;
     const dx = Math.cos(p.angulo) * (radio + 7);
     const dy = Math.sin(p.angulo) * (radio + 7);
