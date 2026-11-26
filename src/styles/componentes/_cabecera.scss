@@ -86,6 +86,7 @@
 
 .teletipo {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: s(3);
   margin-top: s(3);
@@ -100,8 +101,12 @@
     white-space: nowrap;
   }
 
+  .boton {
+    flex-shrink: 0;
+  }
+
   &__texto {
-    flex: 1;
+    flex: 1 1 240px;
     min-width: 0;
     font-style: italic;
     overflow: hidden;

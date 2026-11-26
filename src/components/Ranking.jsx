@@ -19,7 +19,7 @@ function Movimiento({ valor }) {
 }
 
 export default function Ranking() {
-  const { catalogo, version, movimientos, seleccionar, seleccionada, reproducir } = useCatalogo();
+  const { catalogo, version, movimientos, seleccionar, seleccionada, reproducir, simularTendencia } = useCatalogo();
   const [k, setK] = useState(10);
   const [verHeap, setVerHeap] = useState(false);
 
@@ -46,9 +46,14 @@ export default function Ranking() {
             </button>
           ))}
         </div>
-        <button type="button" className="boton boton--linea" aria-expanded={verHeap} onClick={() => setVerHeap((v) => !v)}>
-          {verHeap ? "Ocultar el heap" : "Ver el heap por dentro"}
-        </button>
+        <div className="ranking__acciones">
+          <button type="button" className="boton boton--rojo" onClick={simularTendencia}>
+            Simular tendencia
+          </button>
+          <button type="button" className="boton boton--linea" aria-expanded={verHeap} onClick={() => setVerHeap((v) => !v)}>
+            {verHeap ? "Ocultar el heap" : "Ver el heap por dentro"}
+          </button>
+        </div>
       </div>
 
       {verHeap && <VistaHeap />}
